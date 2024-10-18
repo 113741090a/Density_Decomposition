@@ -1,4 +1,4 @@
-normal_name = "roadNet-CA.txt"
+normal_name = "graph.txt"
 bipartite_name = "bipartite_mark.txt"
 
 # Use a set to track unique edges and avoid duplicates
@@ -8,7 +8,7 @@ with open(normal_name, 'r') as normal_graph, open(bipartite_name, 'w') as bi_gra
     idx = 0
     for line in normal_graph:
         # Split the line by tab and strip any trailing newlines
-        nodes = line.strip().split("\t")
+        nodes = line.strip().split(" ")
         #nodes[1] = nodes[1][0:-1]
         nodes.sort()
         # Ensure we have exactly two nodes
