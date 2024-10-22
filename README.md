@@ -19,7 +19,7 @@ The code for data preprocessing can be found in the 'data-preprocessing' folder.
 
 Additionally, for a normal graph provided in the format where each line is 'u v', denoting the edge (u, v) in the normal graph, we offer scripts to convert the normal graph into its bipartite representation and its bipartite double cover.
 
-To convert a normal graph file named 'norma.txt' into its bipartite representation, run the 'norm_to_bi.py' script. This will produce a file named 'bipartite_mark.txt'. To generate the bipartite double cover, run the 'norm_to_hyper.py' script, resulting in a file named 'bipartite_hyper.txt'.
+To convert a normal graph file named 'graph.txt' into its bipartite representation, run the 'norm_to_bi.py' script. This will produce a file named 'bipartite_mark.txt'. To generate the bipartite double cover, run the 'norm_to_hyper.py' script, resulting in a file named 'bipartite_hyper.txt'.
 
 ## Exact Decomposition
 Bipartite representation: To calculate the exact decomposition for bipartite representation of normal graphs, refer to the code in /exact-decomposition/normal/decomposition.cpp. This file is written in C++. Prior to compiling the code, ensure that you have installed the Boost package (available at https://www.boost.org/). Place the input file named "bipartite_mark.txt" in the same directory as the compiled code, then proceed to execute the code. Upon execution, two files will be generated: "maxflow_res_large.txt," which contains the decomposition, and "Exact_normal.txt," detailing the information about the density vector of each hypernode. "Exact_normal.txt" will be utilized in evaluating the approximation quality.
