@@ -15,7 +15,7 @@ The codes were tested on Linux system.
 - [License](#license)
 
 ## Data Preprocessing
-The code for data preprocessing can be found in the 'data-preprocessing' folder. The input data should be in a bipartite representation of a (hyper)graph, following this format: each line should consist of 'u v', representing the edge (u, v) in the bipartite graph.
+The code for data preprocessing can be found in the 'data-preprocessing' folder. The input data should be in a bipartite representation of a (hyper)graph, following this format: each line should consist of 'u v', representing the edge (u, v) in the bipartite graph. Our data is sourced from https://snap.stanford.edu/. While certain graphs are immediately usable, others require the removal of irrelevant text from the initial section of the downloaded file. To achieve this, you can utilize a Python script located at data-preprocessing/process.py.
 
 Additionally, for a normal graph provided in the format where each line is 'u v', denoting the edge (u, v) in the normal graph, we offer scripts to convert the normal graph into its bipartite representation and its bipartite double cover.
 
@@ -29,10 +29,10 @@ Bipartite double cover: For calculating the exact decomposition for bipartite do
 
 ## Approximation Algorithms
 Bipartite Representation:
-To execute the iterative approximation algorithms and assess the quality of the approximation, compile the code located at /normal/iterative_normal.cpp. Place the original input file named "bipartite_mark.txt" and the density vector file named "Exact_normal.txt" in the same directory as the compiled file. Subsequently, create a folder named "data_normal". You can then run the compiled file, and the resulting data will be stored inside the "data_normal" folder.
+To execute the iterative approximation algorithms and assess the quality of the approximation, compile the code located at /normal/iterative_normal.cpp. Place the original input file named "bipartite_mark.txt" and the density vector file named "Exact_normal.txt" in the same directory as the compiled file. Subsequently, create a folder named "data_normal". You can then run the compiled file, and the resulting data will be stored inside the "data_normal" folder. The data for all the algorithms will be created. 
 
 Bipartite Double Cover:
-For running the iterative approximation algorithms and evaluating the approximation quality, compile the code found at /hyper/iterative_hyper.cpp. Ensure that the original input file named "bipartite_hyper.txt" and the density vector file named "Exact_hyper.txt" are in the same directory as the compiled file. Create a folder named "data_hyper", and after that, execute the compiled file. The data generated will be stored within the "data_hyper" folder.
+For running the iterative approximation algorithms and evaluating the approximation quality, compile the code found at /hyper/iterative_hyper.cpp. Ensure that the original input file named "bipartite_hyper.txt" and the density vector file named "Exact_hyper.txt" are in the same directory as the compiled file. Create a folder named "data_hyper", and after that, execute the compiled file. The data generated will be stored within the "data_hyper" folder. The data for all the algorithms will be created. 
 
 Within the data folder, the following conventions apply: "abs" denotes the global error, "mul" signifies the multiplicative error, and "inv" indicates the number of inversions.
 
