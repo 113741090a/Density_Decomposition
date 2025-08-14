@@ -1199,7 +1199,10 @@ int main(int argc,char** argv){
 	unsigned nsgs,i,k;
 	unsigned nthreads=4;
 	//unsigned rep=1200;
-   unsigned rep = atoi(argv[1]);
+  unsigned rep = 200;
+  if (argc > 1){
+    rep = atoi(argv[1]);
+  }
 	double *err;
   char* edgelist="bipartite_hyper.txt";
   // char* rates=argv[4];
