@@ -1,4 +1,4 @@
-<img width="909" height="82" alt="image" src="https://github.com/user-attachments/assets/35cd1e2b-e165-4f55-b901-a0cb6b9bf959" /># Density_Decomposition
+# Density_Decomposition
 This project encompasses an efficient algorithm for computing precise density decomposition, the implementation of various efficient iterative algorithms for hypergraph density decomposition, data collection for assessing approximation qualities, measurement of time and maximum memory usage, and visualization of figures based on the collected data. 
 
 Iterative algorithms implemnted: Elist++, FISTA*, Greedy++, PR, PR_EXP, PR_LIN. 
