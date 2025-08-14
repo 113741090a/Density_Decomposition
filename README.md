@@ -59,3 +59,7 @@ To evaluate the average time, compile the file located at /time_mem/normal/test_
 
 To assess the maximum memory usage, compile the file found at /time_mem/normal/test_memory.cpp as test_mem without changing its location. Establish a folder named "data_normal_mem" at /time_mem/normal/. Execute the file located at /time/mem/normal/run_memory.sh. In this file, the variable params stores the list of file names of the datasets, while algos holds the list of algorithms to test; these can be adjusted as necessary. Upon completion, the data will be visible within the "data_normal_mem" folder. Create a "figures" directory within it, run the script plot.py, and the resulting figures will be displayed. The process for the bipartite double cover version follows a similar sequence.
 
+## Hardware used
+The experiments are run on a Linux server with Intel Xeon(R) Silver 4114 at 2.20 GHz, with the amount of main memory limited to 57GB.
+
+
