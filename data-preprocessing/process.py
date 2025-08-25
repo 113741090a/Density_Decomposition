@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+
+
 
 
 def print_lines(file_path, x, y):
@@ -63,6 +66,17 @@ def delete_first_x_lines(filename, x):
         file.writelines(remaining_lines)
 
 file_path = 'graph.txt'
-print_first_and_last_lines(file_path, 5, 3)
+
+# sys.argv[0] 是脚本名称
+# sys.argv[1] 是第一个参数，以此类推
+if len(sys.argv) > 1:
+    print("接收到的参数：", sys.argv[1:])
+    num_lines = int(sys.argv[1])
+    delete_first_x_lines(file_path, 4)
+else:
+    print("没有接收到参数")
+    #delete_first_x_lines(file_path, 4)
+
+#print_first_and_last_lines(file_path, 5, 3)
 #delete_first_x_lines(file_path, 4)
 #print_first_and_last_lines(file_path, 5, 3)
