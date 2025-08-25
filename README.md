@@ -1,6 +1,8 @@
 # Density_Decomposition
 This project encompasses an efficient algorithm for computing precise density decomposition, the implementation of various efficient iterative algorithms for hypergraph density decomposition, data collection for assessing approximation qualities, measurement of time and maximum memory usage, and visualization of figures based on the collected data. 
 
+**If you don't want to do it manually, we provide master scripts that you can simply run and see the results. See the last section. **
+
 Iterative algorithms implemnted: Elist++, FISTA*, Greedy++, PR, PR_EXP, PR_LIN. 
 
 The codes were tested on Linux system. 
@@ -61,5 +63,9 @@ To assess the maximum memory usage, compile the file found at /time_mem/normal/t
 
 ## Hardware used
 The experiments are run on a Linux server with Intel Xeon(R) Silver 4114 at 2.20 GHz, with the amount of main memory limited to 57GB.
+
+## Master Script
+
+You can run "master_script_new.sh", then run "master_script_2.sh", the important figures will show in a folder named "images". Put this folder into folder named "source", then compile the latex code, the figures will show in the final pdf file. 
 
 
