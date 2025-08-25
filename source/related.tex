@@ -1,0 +1,71 @@
+\section{Related Work}
+
+\newtext{\noindent \textbf{Rediscovery and Perspectives on Density Decomposition}.}
+As mentioned in the introduction,
+the densest subset problem is a classical problem in combinatorial optimization~\cite{goldberg1984finding} with numerous real-world applications in data mining, network analysis, and machine learning \cite{10.1007/3-540-44436-X_10, khuller2009finding, ma2020efficient, angel2012dense, shin2016corescope, li2020flowscope}.
+While most researchers have a common awareness of the densest subset problem (for example, see the survey~\cite{DBLP:journals/csur/LancianoMFB24}), its generalization to density decomposition is much less cohesive across different research communities. We next describe how this concept has been independently rediscovered multiple times from various perspectives.
+
+
+\noindent \textbf{Mathematics.}
+To the best of our knowledge, the earliest reference to the density decomposition and its associated quadratic program was introduced by Fujishige~\cite{fujishige1980lexicographically} in the context of polymatroids. More general than graphs, the decomposition was defined for a submodular or supermodular function on a weighted ground set~$V$. However, this work has remained relatively obscure within the computer science community until it was recently highlighted in~\cite{DBLP:conf/soda/ChekuriQT22,DBLP:conf/nips/HarbQC22}.
+
+
+\noindent \textbf{Graph Mining.}  The procedure of iteratively
+peeling off maximal densest subsets was introduced by
+Tatti and Gionis~\cite{tatti2015density, tatti2019density}.
+With the node partition $V = \cup_{\ell = 1}^k B_\ell$ in the density decomposition, they introduced the concept of a \emph{locally-dense} subgraph. 
+Such a subgraph is equivalent to the union $\cup_{\ell = 1}^i B_\ell$ of a prefix of the densest components for some $i \leq k$.
+
+On the other hand, Qin et al.~\cite{DBLP:conf/kdd/QinLCZ15}
+used exactly the same term \emph{locally-dense} subgraph to mean
+something slightly different.  Given the density
+decomposition $V = \cup_{\ell = 1}^k B_\ell$,
+the term refers to a connected component within the subgraph induced
+by some part $B_\ell$ that is not adjacent to any node from
+the strictly denser parts $\cup_{i < \ell} B_i$.
+This observation was made by Ma et al.~\cite{DBLP:journals/pvldb/MaCLH22},
+who referred to the density vector as \emph{compact numbers}.
+
+As mentioned in the introduction,
+iterative first-order methods based on the quadratic program
+have been developed~\cite{DBLP:conf/www/DanischCS17,DBLP:conf/www/BoobGPSTWW20,DBLP:journals/pvldb/SunDCS20,DBLP:conf/nips/HarbQC22} in this community.
+
+
+
+\noindent \textbf{Algorithm Design.}  
+Several years before the work by Tatti and Gionis~\cite{tatti2015density}, Goel et al.~\cite{DBLP:conf/soda/GoelKK12} utilized the density decomposition  -- referred to as a \emph{matching skeleton} -- to explore the communication and streaming complexity of maximum bipartite matching. Although they approached the problem from the perspective of bipartite graphs, their description was somewhat more convoluted. They used the Gallai-Edmonds decomposition to first identify any middle part $B_\ell$
+in the decomposition with density 1, and then iteratively constructed the parts with densities strictly greater than 1 and those with densities strictly less than 1 separately.
+Lee and Singla~\cite{DBLP:journals/talg/LeeS20} followed this line of research, and
+applied this decomposition to investigate the batch arrival model of online bipartite matching.
+These works require a subroutine to compute the density decomposition. It is conceivable that an approximate density vector could provide approximation guarantees for these algorithms.
+
+The density decomposition has also been independently discovered in several other works. Bernstein et al.~\cite{DBLP:journals/jacm/BernsteinHR19} used it to analyze the replacement cost of maintaining online maximum bipartite matching. The procedure has been employed to define hypergraph Laplacians in the context of the spectral properties of hypergraphs~\cite{DBLP:journals/jacm/ChanLTZ18}. Additionally, Bansal and Cohen~\cite{DBLP:conf/waoa/BansalC21} used it to address the maximin allocation of hyperedge weights to incident nodes.
+
+\noindent \textbf{Economics.}
+Perhaps the final twist to this tale is that the density decomposition has already been implicitly captured by the Fisher market equilibrium~\cite{fisher1892} that was proposed before the 1900s. As mentioned in the introduction, a hyperedge~$e$ represents a buyer with budget $w(e)$, and a node~$u$ represents a seller with one unit of a divisible good. In a Fisher market, 
+the same good may present arbitrarily different utilities 
+to different buyers.
+However, in the density decomposition, we have the special case where a seller~$u$ has a weight~$w(u)$, and a buyer~$e$ derives a utility of either $w(u)$ or 0 per unit of this good. The density number of~$u$ is simply the equilibrium price per unit of utility for the interested buyers.
+
+Such a connection has been implicitly made, as Jain and Vazirani~\cite{DBLP:journals/geb/JainV10} have shown that the Fisher market equilibrium can be computed by the density decomposition process.
+
+Given this connection, it is natural to apply the proportional response protocol~\cite{DBLP:conf/icalp/Zhang09,birnbaum2011distributed} to obtain the density decomposition. However, the most innovative part of this work is how to accelerate this process with a new notion of exponential momentum, which empirically outperforms existing iterative methods by several orders of magnitude in some cases.
+
+\ignore{
+\newtext{\subsection{Other Related Work}}
+\newtext{
+Density decomposition is closely related to other concepts in graph mining. For example, $k$-clique densest subset~\cite{DBLP:journals/pacmmod/HeW00023}, anchored density~\cite{DBLP:conf/kdd/YeLLLLW24}, core decomposition~~\cite{DBLP:journals/vldb/MalliarosGPV20}. In \cite{DBLP:conf/icde/LuoTF0Z23}, the algorithm makes use of core decomposition, which offers a $2$-approximation to the density decomposition.}
+}
+
+%In \cite{DBLP:journals/pacmmod/HeW00023},
+%$k$-clique densest subset is considered.
+%In \cite{DBLP:conf/kdd/YeLLLLW24}, a new notion of anchored density is considered,
+%but they do not use this notion to define a decomposition.
+%Their algorithms are also based on the Frank-Wolfe approach.
+
+%When their ideas are applied to our setting,
+%the resulting algorithm is essentially the same as $\mathsf{Elist}$++,
+%which has already appeared in our experiments.
+
+
+

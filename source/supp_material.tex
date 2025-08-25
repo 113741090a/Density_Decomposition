@@ -1,0 +1,959 @@
+\section{Additional Empirical Results}
+
+\noindent \textbf{Additional Figures for Normal Graphs.}
+In Figure~\ref{fig:accuracy_iteration_normal_2},
+we have empirical results
+for the approximation quality vs the number of iterations for more graphs.
+In Figure~\ref{fig:accuracy_time_normal_graphs_2},
+we have empirical results for the approximation
+quality vs simulated wall clock time for additional graphs.
+
+
+\noindent \textbf{Empirical Results for Double Covers.}
+As mentioned in Section~\ref{sec:experiments},
+we can construct the double cover for each
+of the normal graphs in Table~\ref{tab:dataset}.
+We repeat the experiments on the double covers, and we get
+very similar empirical results.
+
+
+
+% Group the figures into one
+\begin{figure*}[htbp]
+	\centering
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					D \\
+					B \\
+					L \\
+					P
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/inv_vs_T.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+	\begin{minipage}[b]{0.05\textwidth}
+	\centering
+	\raisebox{1.5cm}{
+		\tiny % ????????????
+		\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+		\begin{tabular}{c}
+			R \\
+			O \\
+			A \\
+			D \\
+			N\\
+			E\\
+			T\\
+			\vrule\\
+			P  \\
+			A
+		\end{tabular}
+	}
+	%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+\end{minipage}%
+% ?????
+\begin{minipage}[b]{0.3\textwidth}
+	\centering
+	\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/Absolute_Error_vs_T.png} % ?????????
+	
+\end{minipage}%
+% ?????
+\begin{minipage}[b]{0.3\textwidth}
+	\centering
+	
+	\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/Multiplicative_Error_vs_T.png} % ?????????
+	
+\end{minipage}%
+% ?????
+\begin{minipage}[b]{0.3\textwidth}
+	\centering
+	
+	\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/inv_vs_T.png} % ?????????
+\end{minipage}
+
+\end{subfigure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+		\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					C \\
+					I \\
+					T \\
+					\vrule\\
+					P \\
+					A\\
+					T\\
+					E\\
+					N  \\
+					T\\
+					S
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/inv_vs_T.png} % ?????????
+		\end{minipage}
+		
+	\end{subfigure}
+	%%%%%%%%%%%%%%%%%
+	
+	\caption{Approximation Quality vs Number of Iterations: Additional Normal Graphs}
+	\label{fig:accuracy_iteration_normal_2}
+\end{figure*}
+
+
+%%%%%%%%%%%%
+%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Group the figures into one
+\begin{figure*}[htbp]
+	\centering
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					D \\
+					B \\
+					L \\
+					P
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/dblp/figures_normal/inv_vs_Time.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+		%%
+	%% PA
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					R \\
+					O \\
+					A \\
+					D \\
+					N\\
+					E\\
+					T\\
+					\vrule\\
+					P  \\
+					A
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_normal/inv_vs_Time.png} % ?????????
+		\end{minipage}
+		
+	\end{subfigure}
+	%%%	
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					C \\
+					I \\
+					T \\
+					\vrule\\
+					P \\
+					A\\
+					T\\
+					E\\
+					N  \\
+					T\\
+					S
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/patents/figures_normal/inv_vs_Time.png} % ?????????
+		\end{minipage}
+		
+	\end{subfigure}
+	%%%
+	%%%%
+		%
+	%CATS
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					W \\
+					I \\
+					K \\
+					I \\
+					\vrule\\
+					T\\
+					O\\
+					P\\
+					C\\
+					A\\
+					T\\
+					S
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/wiki-cats/figures_normal/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/wiki-cats/figures_normal/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/wiki-cats/figures_normal/inv_vs_Time.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	%%%%%
+	\caption{Approximation Quality vs Simulated Wall Clock Time: Additional Normal Graphs}
+	\label{fig:accuracy_time_normal_graphs_2}
+\end{figure*}
+
+
+%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+
+\begin{figure*}[htbp]
+
+
+\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Time-Hyper Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/time_hyper/output.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Memory-Hyper Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/mem_hyper/output.png} % ?????????
+		\end{minipage}%
+	
+	
+		\caption{Running Time and Memory Usage vs Graph Size on Double Covers}
+\label{fig:time_mem_double}
+\end{figure*}
+
+
+
+%%%%%%%%%%%%%
+%%%%%%%%%%%%
+
+
+% Group the figures into one
+\begin{figure*}[htbp]
+	\centering
+	\ignore{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					A \\
+					M \\
+					A \\
+					Z \\
+					O  \\
+					N
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/inv_vs_T.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	}
+	\begin{subfigure}[b]{\textwidth}
+	\centering
+	% ???????????
+	\begin{minipage}[b]{0.05\textwidth}
+		\centering
+		\raisebox{1.5cm}{
+			\tiny % ????????????
+			\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+			\begin{tabular}{c}
+				D \\
+				B \\
+				L \\
+				P
+			\end{tabular}
+		}
+		%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Global Error} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Local Error} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Number of Inversions} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/inv_vs_T.png} % ?????????
+	\end{minipage}
+\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					R \\
+					O \\
+					A \\
+					D \\
+					N\\
+					E\\
+					T\\
+					\vrule\\
+					P  \\
+					A
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/inv_vs_T.png} % ?????????
+		\end{minipage}
+		
+	\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					R \\
+					O \\
+					A \\
+					D \\
+					N\\
+					E\\
+					T\\
+					\vrule\\
+					C  \\
+					A
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/inv_vs_T.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+	\centering
+	% ???????????
+	\begin{minipage}[b]{0.05\textwidth}
+		\centering
+		\raisebox{1.5cm}{
+			\tiny % ????????????
+			\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+			\begin{tabular}{c}
+				W \\
+				E \\
+				B \\
+				\vrule\\
+				G \\
+				O\\
+				O\\
+				G\\
+				L  \\
+				E
+			\end{tabular}
+		}
+		%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/inv_vs_T.png} % ?????????
+	\end{minipage}
+	\end{subfigure}
+	%
+		\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+				C \\
+				I \\
+				T \\
+				\vrule\\
+				P \\
+				A\\
+				T\\
+				E\\
+				N  \\
+				T\\
+				S
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/Absolute_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/Multiplicative_Error_vs_T.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/inv_vs_T.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	%
+	\caption{Approximation Quality vs Number of Iterations: Selected Double Covers}
+	\label{fig:erros_hyper}
+\end{figure*}
+
+
+
+
+
+
+
+% Group the figures into one
+\begin{figure*}[htbp]
+	\centering
+	\ignore{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					A \\
+					M \\
+					A \\
+					Z \\
+					O  \\
+					N
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/amazon/figures_hyper/inv_vs_Time.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	}
+	\begin{subfigure}[b]{\textwidth}
+	\centering
+	% ???????????
+	\begin{minipage}[b]{0.05\textwidth}
+		\centering
+		\raisebox{1.5cm}{
+			\tiny % ????????????
+			\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+			\begin{tabular}{c}
+				D \\
+				B \\
+				L \\
+				P
+			\end{tabular}
+		}
+		%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Global Error} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Local Error} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\caption*{Number of Inversions} % ???
+		\includegraphics[width=\textwidth]{images/dblp/figures_hyper/inv_vs_Time.png} % ?????????
+	\end{minipage}
+\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					R \\
+					O \\
+					A \\
+					D \\
+					N\\
+					E\\
+					T\\
+					\vrule\\
+					P  \\
+					A
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-PA/figures_hyper/inv_vs_Time.png} % ?????????
+		\end{minipage}
+		
+	\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					R \\
+					O \\
+					A \\
+					D \\
+					N\\
+					E\\
+					T\\
+					\vrule\\
+					C  \\
+					A
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			
+			\includegraphics[width=\textwidth]{images/Roadnet-CA/figures_hyper/inv_vs_Time.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+	\begin{subfigure}[b]{\textwidth}
+	\centering
+	% ???????????
+	\begin{minipage}[b]{0.05\textwidth}
+		\centering
+		\raisebox{1.5cm}{
+			\tiny % ????????????
+			\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+			\begin{tabular}{c}
+				W \\
+				E \\
+				B \\
+				\vrule\\
+				G \\
+				O\\
+				O\\
+				G\\
+				L  \\
+				E
+			\end{tabular}
+		}
+		%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+		
+	\end{minipage}%
+	% ?????
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		
+		\includegraphics[width=\textwidth]{images/web-google/figures_hyper/inv_vs_Time.png} % ?????????
+	\end{minipage}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		\begin{minipage}[b]{0.05\textwidth}
+			\centering
+			\raisebox{1.5cm}{
+				\tiny % ????????????
+				\renewcommand{\baselinestretch}{0.8}\selectfont % ?????
+				\begin{tabular}{c}
+					C \\
+					I \\
+					T \\
+					\vrule\\
+					P \\
+					A\\
+					T\\
+					E\\
+					N  \\
+					T\\
+					S
+				\end{tabular}
+			}
+			%\raisebox{1.5cm}{\rotatebox{90}{\textbf{Main Title}}} % ?????????
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Global Error} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/Absolute_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Local Error} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/Multiplicative_Error_vs_Time.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.3\textwidth}
+			\centering
+			%\caption*{Number of Inversions} % ???
+			\includegraphics[width=\textwidth]{images/patents/figures_hyper/inv_vs_Time.png} % ?????????
+		\end{minipage}
+	\end{subfigure}
+%
+	\caption{Approximation Quality vs Simulated Wall Clock Time: Selected Double Covers}
+	\label{fig:erros_hyper_time}
+\end{figure*}
+
+
+
+\ignore{
+
+\begin{figure*}[htbp]
+	\centering
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		% ???????????
+		% ?????
+		\begin{minipage}[b]{0.25\textwidth}
+			\centering
+			\caption*{Time-Normal Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/time_normal/output.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.25\textwidth}
+			\centering
+			\caption*{Memory-Normal Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/mem_normal/output.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.25\textwidth}
+			\centering
+			\caption*{Time-Hyper Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/time_hyper/output.png} % ?????????
+			
+		\end{minipage}%
+		% ?????
+		\begin{minipage}[b]{0.25\textwidth}
+			\centering
+			\caption*{Memory-Hyper Graph} % ???
+			\includegraphics[width=\textwidth]{images/time_mem/mem_hyper/output.png} % ?????????
+		\end{minipage}%
+	\end{subfigure}
+	\label{fig:time_mem}
+\end{figure*}
+}
+

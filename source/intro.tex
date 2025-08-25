@@ -1,0 +1,301 @@
+\section{Introduction}
+
+
+In today's interconnected digital landscape, graphs are indispensable for modeling complex relationships across a wide range of domains. 
+For instance, social networks~\cite{DBLP:journals/pvldb/ChingEKLM15} can be represented as graphs, where users are nodes, and their friendships are the edges connecting them. 
+This graph-based approach extends beyond social platforms into the biological sciences, where graphs model interactions among proteins or genes, uncovering vital regulatory networks~\cite{FengSong2021Hmob}. 
+One key area within graph theory is the mining of dense subgraphs, which has significant applications across various fields. In network science, dense subgraphs help reveal tightly-knit communities~\cite{DBLP:journals/tweb/DourisboureGP09,DBLP:journals/tkde/ChenS12}, while in biology, they identify critical regulatory motifs in genomic sequences~\cite{DBLP:conf/ismb/FratkinNBB06}. 
+Additionally, dense subgraph algorithms are employed to enhance graph databases~\cite{DBLP:journals/pvldb/FangYCLL19}, optimize queries~\cite{DBLP:conf/sigmod/JinXRF09}, and even detect anomalies such as link spam in web mining~\cite{DBLP:conf/vldb/GibsonKT05}. 
+This fundamental task of identifying dense substructures is crucial not only for simplifying complex networks but also for efficiently extracting meaningful patterns from vast datasets.
+
+
+
+%The \emph{densest subset} (or \emph{subgraph}) problem is a well-known and extensively studied topic in combinatorial optimization, with applications in areas such as 
+%web mining~\cite{DBLP:conf/vldb/GibsonKT05}, biology~\cite{DBLP:conf/ismb/FratkinNBB06}, finance~\cite{DBLP:conf/kdd/DuJDLT09}.
+\noindent \textbf{Densest Subset Problem.} The simplest instance of the \emph{densest subset} (or \emph{subgraph}) problem
+consists of an undirected graph $(V, E)$,
+where the goal is to find a non-empty subset $S \subseteq V$ that maximizes
+the density~$\frac{|E[S]|}{|S|}$, where~$E[S]$ is the subset of edges
+in~$E$ with both endpoints in~$S$. 
+We study the general instance of a hypergraph
+$H = (V, E; w)$ with both node- and hyperedge-weights,
+where each hyperedge in $E \subseteq 2^V$ is a subset of nodes.
+\newtext{
+An example of a hypergraph is the research collaboration network,
+in which authors are the nodes,
+and each publication corresponds to a hyperedge containing
+the nodes corresponding to the coauthors.
+}
+
+
+
+\newtext{However, for ease of understanding,
+the reader may choose to focus on the simple case
+of normal graphs where each edge in $E$ is an unordered pair $\{u, v\}$
+of nodes in $V$.}
+
+
+Since the early discoveries of polynomial-time algorithms
+by Picard and Queyranne~\cite{DBLP:journals/networks/PicardQ82}
+and Goldberg~\cite{goldberg1984finding} via maximum-flow subroutines, the problem
+has gained significant attention and inspired a huge volume of works,
+including the famous exact LP formulation and approximate greedy algorithm by 
+Charikar~\cite{10.1007/3-540-44436-X_10}.  A more detailed survey~\cite{DBLP:journals/csur/LancianoMFB24} has been written for the problem and its variants.
+\newtext{
+For instance, a new notion of anchored density~\cite{DBLP:conf/kdd/YeLLLLW24}
+has been proposed, and the state-of-the-art algorithms for the conventional
+densest subset problem can be extended to this new variant.
+}
+
+\noindent \newtext{\textbf{Global Density Structure.}}
+Beyond identifying the densest region in a graph, several approaches have been developed to analyze and understand the global density structure of a graph. Specifically, a value is assigned to each node, with a larger value indicating that a node resides in a denser region. These values enable a natural decomposition of the graph by partitioning the nodes, such that those with the same value belong to the same part. Two global notions of density decomposition are prevalent in the literature.
+
+
+The \emph{core decomposition} is defined
+for an edge-weighted hypergraph~$H$, but with uniform node weights,
+where the \emph{core value} $c(u)$ of a node~$u$ is the largest value~$d$
+such that there is subgraph of~$H$ containing $u$ where every node
+in the subgraph has a (weighted) degree of at least~$d$.
+The core decomposition is computed using an iterative process that peels away nodes with smaller degrees.
+Details of the core decomposition
+and its applications can be found in the survey~\cite{DBLP:journals/vldb/MalliarosGPV20}.
+
+The major focus of this paper, however, 
+is another decomposition notion whose earliest known
+appearance was mentioned in the context
+of polymatroids by Fujishige~\cite{fujishige1980lexicographically}.
+As discussed later in the related work section, this decomposition has found applications across a variety of fields, including algorithm design, graph mining, and markets, due to its rich mathematical structure. Interestingly, this concept has been independently discovered multiple times in different disciplines, occasionally without even a formal name. Therefore, we will simply refer to it as the \emph{density decomposition}.
+
+Unlike the core decomposition, the \emph{density decomposition}
+can be defined for hypergraphs with both node and edge weights,
+which we will represent with a bipartite graph in the technical sections.
+However, for simplicity, we now describe a procedure for the case with uniform node weights, where the goal is to assign a number to each node that will reflect its local density.
+Given a hypergraph $H = (V, E; w)$, the first step
+is to find the (unique) maximal densest subset $S_1 \subseteq V$,
+i.e., its density $\rho(S_1) = \frac{w(E[S_1])}{|S_1|}$ is maximized.
+If there are multiple densest subsets attaining the maximum density, it is known that $S_1$ is their union.
+Then, each node $u \in S_1$ is assigned the \emph{density number}
+$\rho_*(u) = \rho(S_1)$, and the process is repeated on
+the \emph{quotient graph} (which we will further elaborate) after removing~$S_1$, so that
+eventually, every node will get its density number.
+\textbf{
+The overall goal of this work is to compute or approximate this density
+vector $\rho_* \in \R^V$.}
+\newtext{
+In the hypergraph example of a collaboration network, the density number of a researcher measures how tightly-knit they are with their peers.
+}
+
+\newtext{
+It is also known~\cite{DBLP:journals/jpdc/ChanSS21,DBLP:journals/pvldb/MaCLH22} that for a normal graph,
+the density decomposition and the core decomposition approximate each other 
+in the sense that for each $u \in V$,
+$\rho_*(u) \leq c(u) \leq 2 \rho_*(u)$.}
+
+\newtext{
+Indeed, core decomposition has been used in~\cite{DBLP:conf/icde/LuoTF0Z23}
+to obtain a $2$-approximation for the density decomposition.
+However, in this work, we focus on $(1+\epsilon)$-approximation
+for small $\epsilon > 0$.}
+
+
+\noindent \emph{Quotient Graph.} When $S_1$ is removed 
+from $H$, the edges need to be modified as well.
+It is clear that edges completely contained within $S_1$
+should be removed, and edges that do not intersect with $S_1$
+should remain.  However, we must be careful with
+an edge $e \in E$ that crosses~$S_1$.  Interpreting
+edge $e \subseteq V$ as a subset of nodes,
+such an edge induces $e' = e \setminus S_1$ in the quotient graph.
+If such $e' \in E$ already exists in~$E$, then the original weight $w(e)$ needs to be added to the weight of~$e'$.
+
+\noindent \emph{Weight Allocation in Quadratic Program.} 
+Note that in the process described above, the weight $w(e)$ of each edge $e$ is fully accounted for and eventually (fractionally) allocated to the nodes contained within $e$. It has been established that using this weight allocation as a feasible solution, minimizing a quadratic objective function yields the density vector $\rho_*$.
+
+
+\noindent \emph{Polynomial-Time Exact Algorithms.}
+The procedural description of the density decomposition
+immediately provides an exact algorithm by solving instances
+of the densest subset problem.
+However, the fastest theoretical algorithm is obtained by
+solving the above quadratic program via
+the recent nearly-linear time algorithm for minimum-cost flow~\cite{DBLP:conf/focs/ChenKLPGS22}.  Nevertheless, these exact methods
+do not scale well for very large graphs.
+
+
+\noindent \emph{Approximate Iterative Methods for
+Quadratic Program.}  A series of iterative algorithms 
+has been developed based on first-order methods on the quadratic program.
+Moreover, the KKT condition implies a \emph{local maximin condition},
+namely, each edge $w(e)$ allocates a positive weight 
+to a node $u \in e$ only if $u$ attains the minimum payload density
+among incident nodes of $e$.  Here is a summary
+of these methods.
+
+\begin{compactitem}
+
+\item \textbf{Frank-Wolfe} (\fw)~\cite{DBLP:conf/www/DanischCS17}.
+In each iteration of \fw, all edges $e \in E$ are processed in parallel, and the weight $w(e)$ is fully allocated to the incident node with the minimum current payload.
+
+
+
+
+\item \textbf{Sequential Processing of Edges in Each Iteration.} 
+It is easier to achieve the local maximin condition in each iteration if the weights of the edges are allocated to nodes sequentially, allowing different edges to coordinate their weight allocation.
+
+
+
+The method \elist (which stands for \emph{edge list}) follows this intuition 
+to modify \fw.
+This approach was first mentioned briefly in~\cite{DBLP:conf/www/DanischCS17} as the \emph{asynchronous version} of \fw,
+and subsequently described in detail as \kclist 
+in~\cite{DBLP:journals/pvldb/SunDCS20}
+for the special case of the $k$-clique list;
+\newtext{a more efficient method to generate the list of $k$-cliques
+is given in~\cite{DBLP:journals/pacmmod/HeW00023}.}
+In each iteration, the edge list is processed in an arbitrary sequential order.
+
+
+The method \greedypp~\cite{DBLP:conf/www/BoobGPSTWW20}
+is a hybrid between parallel and sequential processing of the edges in each iteration. It processes the nodes sequentially, and at each step, the algorithm removes the node with the minimum resulting payload after receiving the weights of the remaining incident edges.
+
+
+\item \textbf{Momentum Methods.} While \elist and \greedypp can be viewed as combinatorial algorithms, first-order methods with momentum, such as 
+\fista~\cite{beck2009fast}, have also been directly applied to the 
+quadratic program~\cite{DBLP:conf/nips/HarbQC22}.
+
+
+\end{compactitem}
+
+
+\noindent \textbf{Convergence Guarantees.} Standard analyses of gradient methods show that to return an approximate vector $\widehat{\rho} \in \mathbb{R}^V$ with \emph{absolute error} $\| \widehat{\rho} - \rho_*\|_2 \leq \epsilon$ on a normal
+unweighted graph with $n$ nodes and $m$ edges, \fw will require $O\left(\frac{mn}{\epsilon^2}\right)$ iterations~\cite{DBLP:conf/www/DanischCS17}, while the asymptotically superior \fista will need only $O\left(\frac{\sqrt{mn}}{\epsilon}\right)$ iterations~\cite{DBLP:conf/nips/HarbQC22}. Intuitively, \elist and \greedypp could empirically perform much better than \fw, but since dependencies between edges are very difficult to analyze in a sequential process, 
+current analyses~\cite{DBLP:conf/www/BoobGPSTWW20,DBLP:conf/esa/HarbQC23}
+can only prove that their convergence rates are similar to \fw.
+
+
+\noindent \textbf{Empirical Studies.} 
+Among these iterative methods, the most recent study by Harb et al.~\cite{DBLP:conf/nips/HarbQC22} compared the empirical performances of \fw, \greedypp, and \fista (but did not include \elist). They measured performance by (i) the maximum density of a subset recovered from the approximate density vector, and (ii) the value of the objective function in the quadratic program. The conclusion of the empirical study is that the performances of \fista and \greedypp are comparable to each other, and both are significantly better than~\fw.
+
+
+
+
+\subsection{Our Contributions}
+
+We observe that an efficient approximate iterative
+algorithm for the density decomposition has been hiding in plain sight all along,
+with an even more precise notion of approximation.
+
+
+\noindent \emph{Market Interpretation.} An edge-weighted hypergraph can be interpreted as a special case of a linear Fisher market~\cite{fisher1892}, where each hyperedge~$e$ is a buyer with a budget~$w(e)$, and each node~$u$ is a divisible good that offers one unit of utility to an edge containing it. In this interpretation, an edge-weight allocation represents how buyers exhaust their budgets, and the money received by each good is its price, corresponding to the payload of the node. The local maximin condition for weight allocation coincides exactly with the definition of a Fisher market equilibrium. In fact, the subroutine described by Jain and Vazirani~\cite{DBLP:journals/geb/JainV10}
+ to compute a general Fisher equilibrium is actually a variant of the density decomposition procedure described above.
+
+
+
+\noindent \emph{Approximating Fisher Equilibrium by Proportional Response.} Proportional response is the principle that an agent allocates its resources to other entities in proportion to what it receives from each entity. The \pr protocol starts with any initial buyer budget allocation. In each iteration, each seller distributes its goods fractionally among its buyers in proportion to the amount of money received from each buyer. Consequently, each buyer updates its budget allocation proportionally, based on the utility derived from each seller. Zhang~\cite{DBLP:conf/icalp/Zhang09} proved that \pr converges to a market equilibrium with a multiplicative error for the price of each good. 
+Birnbaum et al.~\cite{DBLP:conf/sigecom/BirnbaumDX11}
+improved the analysis and showed that \pr can be interpreted as a generalized gradient descent method.
+
+
+\noindent \textbf{Density Decomposition with Multiplicative Error.} The work presented in~\cite{DBLP:conf/sigecom/BirnbaumDX11}
+demonstrates that for a typical unweighted graph with $n$ nodes and $m$ edges, the \pr algorithm can be executed in $\widetilde{O}\left(\frac{mn}{\epsilon^2}\right)$ iterations to achieve an $\epsilon$-multiplicative error in the node density estimation. Specifically, it returns an approximate vector $\widehat{\rho}$ such that for every node $u$, the error satisfies $|\widehat{\rho}(u) - \rho_*(u)| \leq \epsilon \cdot \rho_*(u)$.
+It is important to note that this result provides a local guarantee, offering greater precision than a global bound on \mbox{$\|\widehat{\rho} - \rho_*\|_2$}.
+
+
+\noindent \textbf{Our Experiments.} Note that the theoretical convergence bounds for the different methods are not directly comparable due to varying approximation notions. In this study, we compare the empirical performance of quadratic program-inspired methods -- \elist, \greedypp, and \fista \hspace{0pt}  -- against \pr. Since \fista is a momentum-based method and \pr can be interpreted as a gradient descent approach, it is natural to consider a momentum variant for \pr. In fact, it remains an open question~\cite{DBLP:conf/sigecom/BirnbaumDX11} whether such a variant could achieve an asymptotically better convergence rate.
+
+
+
+
+
+
+
+\noindent \emph{Momentum Variant.}
+Consider a general iterative operation $\Phi$ that generates the sequence $\{\alpha^{(t)}\}_{t \geq 0}$ through the update $\alpha^{(t)} \gets \Phi(\alpha^{(t-1)})$.
+
+The standard (linear) momentum variant, as proposed by Nesterov~\cite{Nesterov1983AMF}, selects a rate $\gamma_t = 1 - \frac{3}{t+3}$,
+and introduces auxiliary variables:
+
+
+
+$$\widehat{\alpha}^{(t+1)} \gets
+(1 + \gamma_t) \cdot \alpha^{(t+1)} - \gamma_t \cdot \alpha^{(t)},$$
+
+where a projection step may be needed to make sure that
+$\widehat{\alpha}^{(t+1)}$ is still feasible.
+The iteration operation
+is applied to produce $\alpha^{(t+2)} \gets \Phi(\widehat{\alpha}^{(t+1)})$.
+
+
+\noindent \textbf{Novel Variant: Exponential Momentum.}
+Since \pr adjusts allocation proportionally, it seems intuitive to explore the use of exponential momentum with a different definition for the auxiliary variable. Specifically, for $u \in e$, we define:
+
+$$\widehat{\alpha}^{(t+1)}_{e \to u} \gets \exp\{
+(1 + \gamma_t)  \ln  \alpha^{(t+1)}_{e \to u} - \gamma_t  \ln \alpha^{(t)}_{e \to u}\},$$
+
+where a normalization step ensures that $\widehat{\alpha}^{(t+1)}$ remains a valid weight allocation. We introduce \prlin and \prexp to distinguish between the two momentum variants of \pr.
+
+
+\noindent \emph{Performance Metrics.}
+We use the following metrics to assess the accuracy of an approximate solution $\widehat{\rho}$ compared to the target $\rho_*$. These metrics can also be employed to monitor the progress of the iterative methods.
+
+
+\begin{compactitem}
+
+\item Local Error.
+This is the point-wise multiplicative error: 
+
+$\max_{u \in V} \frac{|\widehat{\rho}(u) - \rho_*(u)| }{\rho_*(u)}$.
+
+
+\item Global Error.
+This is the normalized absolute error:
+$\frac{\|\widehat{\rho} - \rho_*\|_2 }{\|\rho_*\|_2}$.
+
+\item Number of Inversions.
+Given $\widehat{\rho}$, the nodes in $V$ are sorted in non-increasing order~$\sigma$ based on the values in $\widehat{\rho}$, with ties resolved by node name. The number of inversions in~$\sigma$ with respect to $\rho_*$ is the count of unordered pairs $\{u, v\} \in \binom{V}{2}$ such that $u$ appears earlier than~$v$ in $\sigma$, but $\rho_*(u) < \rho_*(v)$.
+
+Unlike the local and global errors, a converging iterative algorithm will eventually produce an approximate density vector that induces a node order with zero inversions with respect to $\rho_*$. At this point, applying the Pool-Adjacent-Violators Algorithm (PAVA)~\cite{barlow1972statistical} to that order will yield the exact decomposition.
+
+
+\end{compactitem}
+
+\noindent \textbf{Our Major Findings.}
+We compare the iterative methods across several 
+large-scale
+real-world  graphs. Below are highlights of our empirical findings:
+
+
+\begin{compactitem}
+
+\item 
+In terms of accuracy versus the number of iterations, the new \prexp outperforms all other methods across all performance measures in a majority of the real-world graphs. In some cases, the improvement is several orders of magnitude.
+
+Interestingly, the \prlin variant with linear momentum performs worse than the original \pr and does not seem to improve the accuracy much after a certain number of iterations.
+
+
+
+\item 
+The closest competitor to \prexp is \fista, which has slightly better accuracy in some graphs. However, among the methods inspired by quadratic programming, \elist and \greedypp achieve similar accuracy relative to the number of iterations and outperform \fista significantly in some cases.
+
+Even though \greedypp has slightly better accuracy than \elist using the same number of iterations, when we compare all methods in terms of running time per iteration, \elist is the fastest, while \greedypp is the slowest.
+
+
+
+\end{compactitem}
+
+One can conclude that, holistically, \prexp has the most advantages. However, for some graphs, one could also consider the methods \elist and \fista, each of which has its own advantages.
+\newtext{
+Although we currently lack the techniques to prove the convergence rates of \prexp, we believe this work will inspire further theoretical research. 
+This is a common occurrence in the research community, as demonstrated by the 
+\greedypp algorithm~\cite{DBLP:conf/www/BoobGPSTWW20},
+which was initially proposed based on empirical evidence and later had its theoretical convergence analysis established~\cite{DBLP:conf/soda/ChekuriQT22}.
+}
+
+
+
+\ignore{
+Our Contribution: Proportional Response Algorithm for Bounded Multiplicative Error
+In this paper, we propose a novel approach to graph density decomposition by applying the Proportional Response (PR) algorithm, originally developed to compute market equilibria in Fisher markets \cite{zhang2011proportional}. The PR algorithm is a distributed protocol in which each participant (node) allocates resources (e.g., bandwidth or goods) to others in proportion to what they receive. Over time, this iterative process converges to a market equilibrium, which ensures a fair and efficient allocation of resources. Our key insight is that this proportional response mechanism can be adapted to the graph density decomposition problem to achieve a bounded multiplicative error, which has not been done before.
+
+Unlike previous approaches, our algorithm guarantees that the density of each subgraph in the decomposition is within a multiplicative factor of the optimal density. This is a significant improvement over algorithms that only offer absolute error bounds. Additionally, our method is highly scalable and can be implemented efficiently on large graphs. We provide rigorous theoretical analysis demonstrating the convergence of the proportional response dynamics to a dense subgraph decomposition with bounded multiplicative error.
+}

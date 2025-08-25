@@ -1,0 +1,752 @@
+\section{Iterative Approximate Algorithms}
+\label{sec:approx}
+
+
+We now describe the iterative approximate algorithms for density decomposition, whose empirical performances will be evaluated.
+
+
+\subsection{Existing Algorithms Inspired by Quadratic Program}
+
+\noindent \textbf{Quadratic Program.}
+Given a bipartite instance $G = (E, V; \mcal{F}; w)$ induced by a hypergraph, we introduce a quadratic program, variants of which have appeared in previous works~\cite{fujishige1980lexicographically,DBLP:conf/www/DanischCS17,DBLP:conf/nips/HarbQC22}.
+
+
+
+\noindent \textbf{Solution Set: Hyperedge Weights Allocation.}
+The feasible set consists of hyperedge weight allocations. 
+A solution specifies how each hyperedge $e \in E$ distributes its weight $w(e)$ among its neighbors in $\mathcal{F}$. We define the set of feasible allocations as:
+$$\mathcal{A}(G) := \{\alpha \in \mathbb{R}^{\mathcal{F}}_+ : \forall e \in E, \sum_{u:(e,u) \in \mathcal{F}} \alpha_{e\to u} = w(e)\},$$
+
+where $\alpha_{e \to u}$ represents the weight assigned to node $u$ by hyperedge $e$. Each $\alpha \in \mathcal{A}(G)$ induces a density vector $\rho_\alpha \in \R^V$, defined by: 
+$$\rho_\alpha(u) := \frac{\sum_{e \in E: (e,u) \in \mathcal{F}} \alpha_{e\to u}}{w(u)}.$$
+
+
+
+\noindent \textbf{Convex Objective Function.}
+The objective function $Q$ is a weighted sum of the squares of the node densities. The intuition behind minimizing this objective is that it encourages the distribution of hyperedge weights in a way that balances the densities more evenly among the nodes.
+
+
+%$\mcal{K}(G) := \left\{\alpha \in \mathbb{R}^{|\mathcal{F}|}_{\geq 0} \, \middle| \, \forall e \in E, \\ \sum_{i \in V: i \in e} \alpha_{e \to i} = w_e \right\}$ consists of refinements of hyperedge weights.
+
+
+
+\begin{align*}
+	\mathsf{CP}(G): \quad \min \quad  Q(\alpha) & = \sum_{u \in V} w(u) \cdot \rho_\alpha(u)^2\\
+	\text{s.t.} %\quad \sum_{j \in \Ione: i\sim j} \alpha_{ij} = w_e, &\quad \forall i \in \Izero\\
+	\quad \alpha & \in \mcal{A}(G) \\
+	%\alpha_{ij} \geq 0, &\quad \forall i \in \Izero \sim j \in \Ione
+\end{align*}
+
+
+
+The following fact, from~\cite{fujishige1980lexicographically,DBLP:conf/www/DanischCS17},
+shows that solving the quadratic program is sufficient to achieve the density decomposition.
+
+
+\begin{fact}\label{fact:QD-Decom}
+	Every optimal solution~$\alpha_*$ to $\mathsf{CP}(G)$ induces the
+	density vector $\rho_*$ on the nodes as defined in the density decomposition
+	in Definition~\ref{def:decomposition}.
+\end{fact}
+
+By examining the KKT conditions for $\mathsf{CP}(G)$,
+the following fact provides an alternate characterization for optimality.
+
+\begin{fact}[Local Maximin Condition]
+\label{fact:loc-maxmin}
+A solution $\alpha$ is optimal to $\mathsf{CP}(G)$ \emph{iff} it satisfies the
+following local maximin condition: 
+$\forall e \in E, \alpha_{e\to u} > 0 \implies u \in \arg \min_{v \in V:(e, v) \in \mcal{F}} \rho_{\alpha}(v).$
+\end{fact}
+
+
+\noindent \textbf{Standard First-Order Iterative Methods.}
+Standard off-the-shelf gradient methods can be applied to solve $\mathsf{CP}(G)$ as follows:
+
+
+\begin{compactitem}
+
+\item Frank-Wolfe~\cite{DBLP:conf/icml/Jaggi13} (\fw).  
+This is a first-order method that avoids the need for projections. 
+Its application~\cite{DBLP:conf/www/DanischCS17}
+to $\mathsf{CP}(G)$ is outlined in Algorithm~\ref{algo:FW-basic}
+
+
+
+\item Accelerated FISTA~\cite{beck2009fast}.
+This is a projected gradient descent method with Nesterov momentum
+~\cite{Nesterov1983AMF}.
+Its application~\cite{DBLP:conf/nips/HarbQC22} to $\mathsf{CP}(G)$
+is described in Algorithm~\ref{algo:FISTA}.
+
+
+Since the momentum method can push a vector outside the feasible set, 
+a projection operator is required. 
+Given a vector $x \in \R^{\mcal{F}}$, the projection is defined as:
+
+
+$\prod_{\mathcal{A}(G)}(x) = \arg \min_{\alpha \in \mathcal{A}(G)} || \alpha - x ||^2$. 
+
+In~\cite{DBLP:conf/nips/HarbQC22},
+the learning rate in line~\ref{ln:rate} is fine-tuned for improved performance. 
+We use $\fista^*$ to refer to this fine-tuned variant.
+
+\end{compactitem}
+
+
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Wolfe}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Objective function $Q$, feasible set $\mcal{A}(G)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)} \in \mcal{A}(G)$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		Set initial $\alpha^{(0)} \in \mcal{A}(G)$ arbitrarily\;
+		\For{$t = 0$ to $T-1$}{
+			%$\gamma_t \gets \frac{2}{{t+2}}$\;
+			$\hat{\alpha}^{(t)} \gets \arg\min_{\alpha \in \mcal{A}(G)} \langle \alpha, \nabla Q(\alpha^{(t)}) \rangle$\;
+			$\alpha^{(t+1)} \gets (1 - \frac{2}{{t+2}}) \cdot \alpha^{(t)} + \frac{2}{{t+2}} \cdot \hat{\alpha}^{(t)}$\;
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{Frank-Wolfe Algorithm}
+	\label{algo:FW-basic}
+\end{algorithm}
+
+\begin{algorithm}
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwInput{Initialization}{Initialization}
+	%\SetAlgoLined
+	\Input{Objective function $Q$, feasible set $\mcal{A}(G)$, number~$T$ of iterations.}
+	Set learning rate $\eta \gets \frac{1}{2\Delta_w(G)}$; \label{ln:rate} \Comment{$\fista^*$ fine-tunes rate} 
+	
+	Set initial $\alpha^{(0)} = \hat{\alpha}^{(0)} \in \mcal{A}(G)$ arbitrarily\;
+	\For{$t = 0$ to $T-1$}{\
+		%\Comment{Projection operator $\prod_{\mcal{A}(G)}$ to feasible set}\;
+		\tcp{Projected gradient descent}
+		\(\alpha^{(t+1)} = \prod_{\mcal{A}(G)}(\hat{\alpha}^{(t)} - \eta \cdot \nabla Q(\hat{\alpha}^{(t)}))\)\; 
+		%$\hat{\alpha}^{(t)} = (1 + \frac{t-1}{t+2}) \cdot \alpha^{(t)} - \frac{t-1}{t+2} \cdot \alpha^{(t-1)}$;
+		$\hat{\alpha}^{(t+1)} = \alpha^{(t+1)} + \frac{t}{t+3} \cdot (\alpha^{(t+1)} - \alpha^{(t)})$;
+	}
+	\Output{\(\alpha^{(T)}\)}
+	\caption{Accelerated FISTA}
+	\label{algo:FISTA}
+\end{algorithm}
+
+
+\noindent \textbf{Theoretical Convergence Rates.}
+The convergence rates are expressed in terms
+of the norm 
+$\|\rho\|_w = \sqrt{\sum_{u \in V} w(u) \cdot \rho(u)^2}$,
+and the parameter 
+$\Delta_w(G) := \max_{u \in V} \frac{|\mcal{F}(u)|}{w(u)}$,
+where $\mcal{F}(u)$ denotes the collection of hyperedges
+containing~$u$.
+
+%, where $d(u) := |\{e \in E: (e, u) \in \mcal{F}\}|$.
+
+\begin{fact}[Convergence Rates~\cite{DBLP:conf/www/DanischCS17,DBLP:conf/nips/HarbQC22}]
+	\label{cor:abs_error}
+	Suppose $\rho_*$ is density vector induced
+	by an optimal solution to $\mathsf{CP}(G)$.
+	
+	After $T \geq 1$ iterations, the following algorithms provide the corresponding upper bounds on the error $\|\rho_T - \rho_*\|_w$ for the density vector:
+	
+		
+	\begin{compactitem}
+		
+		\item \emph{Frank-Wolfe} (Algorithm~\ref{algo:FW-basic}):
+		$2\sqrt{\frac{\Delta_w(G) \sum_{e \in E} w(e)^2}{T+2}}.$
+		
+		
+		
+		\item \emph{Accelerated FISTA} (Algorithm~\ref{algo:FISTA}):
+		$\frac{\sqrt{8 \Delta_w(G) \sum_{e \in E} w(e)^2 }}{T}.$
+	\end{compactitem}
+\end{fact}
+
+
+
+\noindent \textbf{Sequential Variants of \fw.}
+Given $\alpha \in \mcal{A}(G)$, for any $(e, u) \in \mcal{F}$, the corresponding 
+component of the gradient is: $\nabla Q(\alpha)_{e \to u} = 2 \rho_\alpha(u)$. Therefore, in line 3 in Algorithm~\ref{algo:FW-basic}, each edge $e \in E$ would, in parallel, distribute all its weight to its neighbor~$u$ with the minimum $\rho_\alpha(u)$. 
+
+However, since Fact~\ref{fact:loc-maxmin}
+states that optimality is equivalent to satisfying the local maximin condition, it is reasonable for different hyperedges to coordinate their weight distribution. 
+Thus, some sequential variants of \fw are considered. The idea is to maintain a vector $r_{t} \in \R^V$ that records the aggregate densities received up to iteration $t-1$. Then, during iteration $t$, the weights of the hyperedges are allocated in phases to the nodes, making the distribution smoother.
+
+Below are two strategies for implementing this approach.
+
+
+
+\begin{compactitem}
+
+\item \elist~\cite{DBLP:conf/www/DanischCS17,DBLP:journals/pvldb/SunDCS20}.  In Algorithm~\ref{algo:elist}, 
+the hyperedges are processed sequentially in each iteration, one-by-one from a list. Intuitively, this approach should distribute the hyperedge weights in the smoothest possible manner.
+
+
+\item \greedypp~\cite{DBLP:conf/www/BoobGPSTWW20}.
+This can be viewed as a hybrid between parallel and sequential
+processing of the edges in each iteration.
+In Algorithm~\ref{algo:greedypp}, 
+nodes are processed sequentially. In each phase, the algorithm removes the node with the minimum resulting density after receiving the weights of the remaining incident edges.
+In line~\ref{ln:node},
+for node~$v \in V_H$, 
+$\mcal{F}_H(v)$ is the collection of neighbors of~$v$ in the remaining bipartite graph~$H$.
+
+\end{compactitem}
+
+
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{Elist}{Elist}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\rho_T \in \R^V$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		%Set initial $\alpha^{0} \in \mcal{A}(G)$ arbitrarily\;
+		Set initial $r_0 \gets \vec{0} \in \mathbb{R}^V$\;
+		\For{$t = 0$ to $T-1$}{
+			%$\alpha^{(t)} \gets (1-\frac{2}{t+1})\cdot \alpha^{(t-1)}$\;
+			$r_{t+1} \gets r_{t} \in \R^V$\;
+			%\For{each $v \in V$}{
+				%$r_t(v) \gets r_{t-1}(v)$\;
+			%}
+			\For{each $e \in E$ in \textbf{sequential} order}{
+				$u \leftarrow \arg \min_{v \in e} r_{t+1}(v) + \frac{w(e)}{w(v)}$ \;
+				%$\alpha^{(t)}_{e \to u} \gets \alpha^{(t)}_{e \to u} + \frac{2}{{t+1}} \cdot w(e)$\;	
+				$r_{t+1}(u) \gets r_{t+1}(u) + \frac{w(e)}{w(u)}$\;
+				%	\tcp{future.}\tcp{Fix it}
+			}
+		}
+		\Return $\rho_T = \frac{r_T}{T}$
+		%}
+	
+	\caption{\elist}
+	\label{algo:elist}
+\end{algorithm}
+
+
+\noindent \emph{Convergence Rates.}
+Even though the intuition suggests that \elist and \greedypp should perform better
+than \fw, 
+current analyses~\cite{DBLP:conf/www/BoobGPSTWW20,DBLP:conf/esa/HarbQC23}
+have only been able to demonstrate that their performance is comparable to \fw in terms of density decomposition. 
+However, it has been shown~\cite{DBLP:conf/soda/ChekuriQT22} that \greedypp can be used to 
+obtain a $(1-\epsilon)$-approximation for the densest subset problem.
+
+
+
+\ignore{
+
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Elist}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)}$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		%Set initial $\alpha^{0} \in \mcal{A}(G)$ arbitrarily\;
+		Set initial $\alpha^{(0)} \gets \vec{0} \in \mathbb{R}^V$, $r_0 \gets \vec{0} \in \mathbb{R}^V$\;
+		\For{$t = 1$ to $T$}{
+			$\alpha^{(t)} \gets (1-\frac{2}{t+1})\cdot \alpha^{(t-1)}$\;
+			\For{each $v \in V$}{
+				$r_t(v) \gets (1-\frac{2}{t+1})\cdot r_{t-1}(v)$\;
+			}
+			\For{Each $e \in E$ in sequentially order}{
+				$u \leftarrow \arg \min_{v \in e} r_t(v) + \frac{2}{t+1} \cdot \frac{w(e)}{w(v)}$ \;
+				$\alpha^{(t)}_{e \to u} \gets \alpha^{(t)}_{e \to u} + \frac{2}{{t+1}} \cdot w(e)$\;	
+				%$r_t(u) \gets r_t(u) + \frac{2}{t+1} \cdot \frac{w(e)}{w(u)}$\;
+				%	\tcp{future.}\tcp{Fix it}
+			}
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{FW-Elist Algorithm}
+	\label{algo:FW-Elist}
+\end{algorithm}
+}
+
+
+\begin{algorithm}
+	\SetAlgoLined
+	\caption{Greedy++} \label{algo:greedypp}
+	\SetKwInOut{Input}{Input}
+	\SetKwInOut{Output}{Output}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\rho_{T} \in \R^V$}
+	
+	Initialize vector $r_0 \leftarrow \vec{0} \in \mathbb{R}^V$\;
+	
+	\For{$t \leftarrow 0$ \KwTo $T-1$}{
+		$H \leftarrow G$\;
+		\tcp{Suppose $H = (E_H, V_H; \mcal{F}_H; w)$.}
+		\While{$V_H \neq \emptyset$}{
+			$u \leftarrow \arg \min_{v \in V_H} r_{t}(v) + \frac{w(\mcal{F}_H(v))}{w(v)}$ \label{ln:node}\;
+			%Find the vertex $u \in V_H$ with the minimum $r_{t-1}(u) + d^H(u)$\;
+			$r_{t+1}(u) \leftarrow r_{t}(u) + \frac{w(\mcal{F}_H(u))}{w(u)}$\; 
+			\tcp{Current density of $u \in V$ is $\frac{r_{t+1}(u)}{t+1}$. }
+			Remove $u$ and all its adjacent edges $(e, u) \in \mcal{F}_H$ from $H$\;
+		}
+	}
+	%$\rho_T = \frac{\rho_T}{T}$\;
+	\Return $\rho_T = \frac{r_T}{T} $\;
+	
+\end{algorithm}
+
+
+
+
+\ignore{
+\subsection{First-Order Iterative Algorithms}
+Several works have considered how to solve the convex program approximately. In this section, we will describe some first-order iterative algorithms. It can be proved theoretically that these algorithms can achieve bounded absolute error. 
+
+\noindent \textbf{First-Order Iterative Methods to Solve Convex Program.}
+Both approaches~\cite{DBLP:conf/www/DanischCS17,DBLP:conf/nips/HarbQC22}
+consider iterative gradient methods to tackle $\mathsf{CP}(G)$.
+The difference is that the standard Frank-Wolfe method~\cite{DBLP:conf/icml/Jaggi13}
+is used in~\cite{DBLP:conf/www/DanischCS17},
+while the projected gradient descent with Nesterov momentum~\cite{Nesterov1983AMF} method 
+(such as accelerated FISTA~\cite{beck2009fast})
+is used in~\cite{DBLP:conf/nips/HarbQC22}.
+We recap both methods.
+In first-order methods,
+the convergence rate depends
+on a smoothness parameter $L_Q := \sup_{x \neq y \in \mcal{A}(G)} \frac{\|\nabla Q(x) - \nabla Q(y) \|_2}{\|x - y\|_2}$.
+If $Q$ is twice differentiable,
+this is equivalent to the supremum of the spectral norm $\|\nabla^2 Q(\alpha)\|$ of the Hessian
+over $\alpha \in \mcal{A}(G)$. 
+\cite{DBLP:conf/nips/HarbQC22} shows $L_Q$ is upper bounded by $2\cdot \Delta_w(G)$, where $\Delta_w(G) := \max_{u \in V} \frac{d(u)}{w(u)}$, where $d(u) := |\{e \in E: (e, u) \in \mcal{F}\}|$. 
+
+
+
+
+
+The following notion is helpful in defining the error of the approximation. 
+\begin{definition}[Norm $\| \cdot \|_w$]
+	\label{defn:norm_w}
+	We define a norm $\| \cdot \|_w$
+	on the space of density vectors in~$V$ as follows.
+	For $\rho \in \R^V$,
+	$\|\rho\|_w^2 = \sum_{u \in V} w(u) \cdot \rho(u)^2$. 
+\end{definition}
+
+The following fact can be obtained from~\cite{DBLP:conf/www/DanischCS17,DBLP:conf/nips/HarbQC22} respectively. It proves theoretically the convergence of Algorithm~\ref{algo:FW-basic} and Algorithm~\ref{algo:FISTA}. Here in Algorithm~\ref{algo:FISTA}, given a vector $x \in R^{\mcal{F}}$, $\prod_{\mathcal{A}(G)}(x) = \arg \min_{\alpha \in \mathcal{A}(G)} || \alpha - x ||^2$. 
+
+
+
+
+ 
+Algorithm~\ref{algo:FW-Elist} is the asynchronous version of the Frank-Wolfe algorithm (where the $\alpha$'s can be modified in any arbitrary order) which turns out to be more efficient in practice than the synchronous version. The fact that asynchronous versions are in practice more efficient than synchronous versions has been investigated for other related problems such as Belief Propagation~\cite{DBLP:journals/corr/ElidanMK12}.
+
+
+
+
+\cite{DBLP:conf/www/BoobGPSTWW20} described a fast iterative algorithm called GREEDY++. It does extremely well in experiments. Let $\rho_1$ be the density of the densest subgraph of $G$, the authors conjectured that it yields a $\epsilon$-multiplicative error to $\rho_1$. And this is later proved by \cite{DBLP:conf/soda/ChekuriQT22}. This gives evidence of the theoretical soundness of the algorithm. Given $G$ and for any $u \in V$, define $d^G(u) = \frac{\sum_{e \in E: (e, u) \in \mcal{F}}w(e)}{w(u)}$. %\quan{Rmove W}. 
+
+%$(1 - \epsilon)$ relative approximation in $O\left(\frac{1}{\epsilon^2}\right)$ iterations and each iteration can be implemented in $O(m)$ time. Chekuri et al. \cite{chekuri} proved that GREEDY++ converges to a $(1 - \epsilon)$-approximation in $O\left(\frac{\Delta(G)}{\lambda^* \epsilon^2}\right)$ iterations where $\lambda^*$ is the optimum density. 
+
+%Below is Greedy++ algorithm in~\cite{DBLP:conf/www/BoobGPSTWW20}. It is conjectured that the algorithm will converge and achieves an multiplicative error $O(\frac{1}{\sqrt{T}})$ after $T$ iterations. And it's verified by experiment that Greedy++ works well in practice. 
+
+
+
+%\subsubsection{FISTA Based Algorithms}
+
+}
+
+
+\subsection{New Algorithms Inspired by Markets}
+
+
+As mentioned in the introduction, the bipartite instance $G = (E, V; \mcal{F}; w)$ can be interpreted as a special symmetric Fisher market, where~$E$ represents the buyers and~$V$ represents the sellers. For each~$e \in E$, the budget of buyer~$e$ is~$w(e)$. Each seller~$u \in V$ has one unit of a divisible good, which has a positive utility of~$w(u)$ per unit for any buyer~$e$ with $(e, u) \in \mcal{F}$. Since the local maximin condition in 
+Fact~\ref{fact:loc-maxmin}
+coincides with the characterization of a Fisher market equilibrium, any algorithm that computes or approximates the Fisher equilibrium can be applied to the density decomposition.
+
+Moreover, the equilibrium price of the good sold by seller~$u$ is $w(u) \cdot \rho_*(u)$. Therefore, an approximation algorithm for equilibrium prices with an $\epsilon$-multiplicative error would yield an approximate density vector with a local error of at most~$\epsilon$. 
+The proportional response (\pr) algorithm~\cite{DBLP:conf/icalp/Zhang09} 
+is exactly such an algorithm.
+
+
+To describe the \pr algorithm,
+we also need to consider the allocation of node weights:
+
+$\mathcal{B}(G) := \{\beta \in \mathbb{R}^{\mathcal{F}}_+ : \forall u \in V, \sum_{e:(e,u) \in \mathcal{F}} \beta_{u \to e} = w(u)\}$. 
+
+
+Note that each $\beta \in \mathcal{B}(G)$ also induces a density vector $\rho_{\beta} \in \R^E$ given by 
+$\rho_\beta(e) := \frac{\sum_{u \in V: (e,u) \in \mathcal{F}} \beta_{u\to e}}{w(e)}.$
+
+
+
+\begin{definition}[Proportional Response]
+	\label{defn:pr-process1}
+	Given an instance $(E, V; \mathcal{F}; w)$,
+	we define the proportional response $\msf{PR}$ operator as follows.
+	
+		
+	\begin{compactitem}
+	\item Given a weight allocation $\alpha \in \mcal{A}(G)$ from
+	side~$E$, the proportional response
+	$\msf{PR}(\alpha) \in \mcal{B}(G)$ from side~$V$ is defined as:
+	
+	for $(e,u) \in \mcal{F}$,
+	$\msf{PR}(\alpha)_{u \to e} := \frac{\alpha_{e \to u}}{\rho_\alpha(u)}$,
+	for $\rho_\alpha(u) > 0$.
+	
+	If	$\rho_\alpha(u) = 0$, then
+	in $\msf{PR}(\alpha)$, $u$ may distribute its weight $w(u)$ arbitrarily among its incident edges in $\mcal{F}$.
+		
+	
+	\item By symmetry,
+	given $\beta \in \mcal{B}(G)$,
+	$\msf{PR}(\beta) \in \mcal{A}(G)$ is defined as:
+	
+	for $(e, u) \in \mcal{F}$, 
+			$\msf{PR}(\beta)_{e \to u} := \frac{\beta_{u \to e}}{\rho_\beta(e)}$,
+		for $\rho_\beta(e) > 0$.
+	
+		
+	\end{compactitem}
+
+	%
+	
+\end{definition}
+
+
+
+
+
+\ignore{
+Suppose $\beta$ is a node weights allocation, its proportional response can be defined similarly. 
+
+\begin{definition}[Proportional Response of node Weights Allocation]
+	\label{defn:pr-process2}
+	Given an instance $(E, V; \mathcal{F}; w)$,
+	$\beta$ is a node weights allocation. 
+	Its proportional response $\msf{PR}(\beta) \in \mcal{A}(G)$ is a hyperedge weights allocation satisfying the following: 
+	
+	\begin{compactitem}
+		\item If $e \in E$ has a positive density $\rho_\beta(e) > 0$
+		from $\beta$,
+		then for each $(e, u) \in \mcal{F}$, 
+		
+		$\msf{PR}(\beta)_{e \to u} = \frac{\beta_{u \to e}}{\rho_\beta(e)}$. 
+		
+		\item If a non-isolated vertex $e \in E$ has a zero density $\rho_\beta(e) = 0$
+		from $\beta$, then
+		in $\msf{PR}(\beta)$, hyperedge $e$ may distribute its weight $w(e)$ arbitrarily among its incident edges in $\mcal{F}$. 
+		
+	\end{compactitem}
+
+	%Suppose $\beta$ is a node weights allocation, its proportional response can be defined similarly. 
+	
+\end{definition}
+}
+
+
+\begin{definition}[\pr Update]
+	\label{defn:composed-pr-process}
+	Given an instance $(E, V; \mathcal{F}; w)$ and a hyperedge weight
+	allocation
+	$\alpha \in \mcal{A}(G)$,
+	the \pr update is defined as:
+		$\msf{PR}^+(\alpha) := \msf{PR}(\msf{PR}(\alpha)) \in \mcal{A}(G)$.
+	
+\end{definition}
+
+
+\noindent \textbf{\pr for Density Decomposition.}
+Algorithm~\ref{algo:PR-basic} initializes with
+an hyperedge weight allocation $\alpha^{(0)} \in \mcal{A}(G)$.
+Since every connection in $\mcal{F}$ may potentially
+be needed at equilibrium,
+we distribute the weight of a hyperedge equally among
+its incident nodes. Specifically, for $u \in e$,
+we set $\alpha^{(0)}_{e \to u} \gets \frac{w(e)}{|e|}$.
+In each iteration, \pr update, as defined in Definition~\ref{defn:composed-pr-process},
+is applied to the allocation.
+
+
+
+\ignore{
+
+Given $e \in E$, define $d(e) := |\{u \in V: (e, u) \in \mcal{F}\}|$. It is actually $|e|$ in the hypergraph interpretation. The following definition can help us describe the algorithms. 
+
+
+Proportional response is a iterative process that converges to a Fisher market equilibrium~\cite{DBLP:conf/stoc/WuZ07}. Our bipartite instance $G$ can be interpreted as a special case of a Fisher market \cite{DBLP:conf/stoc/WuZ07, DBLP:journals/corr/abs-2406-17964}. In addition, by checking the equilibrium condition of the Fisher market, the following fact is true~\cite{DBLP:conf/stoc/WuZ07, DBLP:journals/corr/abs-2406-17964}. It can also be derived by checking the KKT condition of the Eisenberg-Gale convex program~\cite{eisenberg1959consensus}, whose optimal solution is equivalent to the Fisher market equilibrium. Therefore, we can use proportional response to obtain an approximate solution. 
+
+\begin{fact}\label{fact:loc-maxmin-equilibrium}
+	$\alpha$ is locally maximin \emph{iff} it corresponding to a market equilibrium of the Fisher market instance derived from $G$.
+	%is an optimal solution to $CP(G)$. 
+\end{fact}
+
+}
+%By fact~\ref{fact:loc-maxmin-equilibrium}, 
+
+%since proportional response converges to the optimal solution of the density decomposition problem, it can be used
+
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Wolfe}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)} \in \mcal{A}(G)$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		Set initial $\alpha^{(0)}_{e \to u} \gets \frac{w(e)}{|e|}$ for any $(e,u) \in \mcal{F}$\;
+		\For{$t = 0$ to $T-1$}{
+			%$\gamma_t \gets \frac{2}{{t+2}}$\;
+			$\alpha^{(t+1)} = \msf{PR}^+(\alpha^{(t)})$\;
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{Proportional Response Algorithm}
+	\label{algo:PR-basic}
+\end{algorithm}
+
+\noindent \emph{Convergence Rate of} \pr.
+The convergence rate of \pr was initially analyzed by Zhang~\cite{DBLP:conf/icalp/Zhang09}
+and later improved by Birnbaum et al.~\cite{DBLP:conf/sigecom/BirnbaumDX11}.
+The multiplicative error on the equilibrium prices directly
+translates to a bound on the local error of the density vector.
+
+%Using the proofs in~\cite{zhang2011proportional,DBLP:conf/sigecom/BirnbaumDX11, DBLP:journals/corr/abs-2406-17964} and by Fact~\ref{fact:loc-maxmin-equilibrium}, Algorithm~\ref{algo:PR-basic} can achieve a bounded multiplicative error on the density vector. 
+
+%the convergence rate of  is as follows: 
+
+\begin{fact}[Local Error on Density Vector]
+	\label{fact:PR_error}
+	Given an instance $(E, V; \mathcal{F}; w)$,
+	let $\\u_{\min} := \min_{(e, u) \in \mcal{F}} \frac{w(u)}{\sum_{v \in V: (e, v) \in \mcal{F}} w(v)}$.
+	
+	After running Algorithm~\ref{algo:PR-basic} on~$G$ 
+	for $T \geq 1$ iterations,
+	the resulting hyperedge weight allocation $\alpha^{(T)}$
+	induces a density vector $\rho_T \in \R^V$,
+	whose local error with respect to the target $\rho_*$ is at most:
+	$$\sqrt{\frac{1}{T} \cdot \frac{16 |E|}{u_{\min}} \cdot 
+	\ln (|E| \cdot |V|)}.$$
+\end{fact}
+
+
+\noindent \textbf{New Algorithms: \pr with Momentum.}
+Birnbaum et al.~\cite{DBLP:conf/sigecom/BirnbaumDX11} demonstrated that 
+Algorithm~\ref{algo:PR-basic}
+is equivalent to a generalized gradient descent algorithm using Bregman divergences (instead of Euclidean distance) on a convex program. They also posed the open problem of whether incorporating momentum into the procedure could accelerate the convergence rate.
+
+Following the structure of Algorithm~\ref{algo:FISTA},
+we introduce momentum to \pr in Algorithm~\ref{algo:PR-Momentum}.
+In line~\ref{ln:momentum}, we explore two different variants of momentum.
+
+\begin{definition}[Momentum Update in \pr]
+\label{defn:momentum}
+In iteration~$t \geq 0$, we choose the momentum rate $\gamma_t = \frac{t}{t+3} = 1 - \frac{3}{t+3}$.
+Given $\alpha^{(t)}$ and $\alpha^{(t+1)} \in \mcal{A}(G)$,
+some $\widehat{\alpha}^{(t+1)} \in \mcal{A}(G)$ is returned 
+by the following variants:
+
+\begin{itemize}
+
+\item \prlin (Linear Momentum).  We have:
+$\widehat{\alpha}^{(t+1)} \gets
+\prod_{\mathcal{A}(G)} \left( (1 + \gamma_t) \cdot \alpha^{(t+1)} - \gamma_t \cdot \alpha^{(t)}
+\right ),$
+
+where the projection operator $\prod_{\mathcal{A}(G)}$ is defined as:
+
+
+$\prod_{\mathcal{A}(G)}(x) = \arg \min_{\alpha \in \mathcal{A}(G)} || \alpha - x ||^2$.
+
+\vspace{5pt}
+
+
+\item \prexp (Exponential Momentum). The update is performed in two steps:
+
+\begin{enumerate}
+
+\item \emph{Momentum Step.} For $(e, u) \in \mcal{F}$,
+
+\begin{equation} \label{eq:momentum}
+\overline{\alpha}_{e \to u} \gets \exp\{
+(1 + \gamma_t)  \ln  \alpha^{(t+1)}_{e \to u} - \gamma_t  \ln \alpha^{(t)}_{e \to u}\}.
+\end{equation}
+
+\item \emph{Normalization.} For $(e,u) \in \mcal{F}$,
+
+\begin{equation} \label{eq:normalize}
+\widehat{\alpha}^{(t+1)}_{e \to u} \gets  \frac{\overline{\alpha}_{e \to u}}{\sum_{v \in e}  \overline{\alpha}_{e \to v}} \cdot w(e).
+\end{equation}
+
+\end{enumerate}
+
+\end{itemize}
+
+\end{definition}
+
+\noindent \textbf{Novel Intuition.} 
+While \prlin follows the standard Nesterov momentum~\cite{Nesterov1983AMF}, we introduce a novel momentum variant. The \prexp variant uses a geometric interpolation between the current and previous iterates in (\ref{eq:momentum}), which better aligns with how \pr updates the solution using proportional adjustments. Furthermore, instead of projections, normalization in (\ref{eq:normalize}) is performed by rescaling proportionally.
+
+
+\ignore{
+It's natural to try to incorporate momentum into the algorithm to accelerate the convergence. Algorithm~\ref{algo:PR-Momentum} incorporate Nesterov momentum~\cite{Nesterov1983AMF} into the proportional response algorithm. Different from Algorithm~\ref{algo:PR-Momentum}, in Algorithm~\ref{algo:PR-Momentum2}, the momentum update uses a logarithmic extrapolation of the current and previous iterates. This form is commonly used in geometric averaging algorithms or multiplicative updates, which may be more stable when dealing with proportions. In addition, the projection steps in these two algorithms are also different. Algorithm~\ref{algo:PR-Momentum} uses Euclidean projection, while Algorithm~\ref{algo:PR-Momentum2} uses a normalization step that ensures the sum of the weights adheres to the capacity constraints, possibly by rescaling the weights proportionally.
+}
+%Since the objective is to accelerate the multiplicative error, in line 4 it may also be reasonable to update $\hat{\alpha}^{(t)}$ using product instead of linear combination. 
+
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Wolfe}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)} \in \mcal{A}(G)$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		Set initial $\alpha^{(0)}_{e \to u} = \hat{\alpha}^{(0)}_{e \to u} = \frac{w(e)}{|e|}$ for any $(e,u) \in \mcal{F}$\; 
+		\For{$t = 0$ to $T-1$}{
+			%$\gamma_t \gets \frac{2}{{t+2}}$\;
+			$\alpha^{(t+1)} = \msf{PR}^+(\hat{\alpha}^{(t)})$\;
+			%$\hat{\alpha}^t = (1 + \frac{t-1}{t+2}) \cdot \alpha^t - \frac{t-1}{t+2} \cdot \alpha^{t-1}$;
+			\tcp{Two variants: \prlin or \prexp}
+			$\hat{\alpha}^{(t+1)} \gets$  Momentum Update in Definition~\ref{defn:momentum}; \label{ln:momentum}
+			%\tcp{Round?;}
+			
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{\pr with Momentum}
+	\label{algo:PR-Momentum}
+\end{algorithm}
+
+
+\ignore{
+\begin{algorithm}
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Wolfe}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)}$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		Set initial $\alpha^{(0)}_{e \to u} = \hat{\alpha}^{(0)}_{e \to u} = \frac{w(e)}{d(e)}$ for any $(e,u) \in \mcal{F}$\; 
+		\For{$t = 1$ to $T$}{
+			%$\gamma_t \gets \frac{2}{{t+2}}$\;
+			$\alpha^{(t)} = \msf{PR}^+(\hat{\alpha}^{(t-1)})$\;
+			%$\hat{\alpha}^t = (1 + \frac{t-1}{t+2}) \cdot \alpha^t - \frac{t-1}{t+2} \cdot \alpha^{t-1}$;
+			\tcp{Projection operator $\prod_{\mathcal{A}(G)}(\alpha) = \frac{w(e)}{ \sum_{(e,u') \in \mcal{F}} \alpha_{e \to u'}} \alpha_{e \to u} \text{ for all } (e,u) \in \mcal{F}$.}
+			$\hat{\alpha}^{(t)} \gets \prod_{\mathcal{A}(G)} \exp\left(\frac{2t+1}{t+2} \log (\alpha^{(t)}) - \frac{t-1}{t+2} \log (\alpha^{(t-1)})\right)$\;
+			% (\alpha^{(t)} + \frac{t-1}{t+2}\cdot (\alpha^{(t)} - \alpha^{(t-1)}) )$\;
+			%\tcp{Round?;}
+			
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{Proportional Response Algorithm with logarithmic momentum}
+	\label{algo:PR-Momentum2}
+\end{algorithm}
+
+}
+
+
+
+\ignore{
+The following algorithm is a variant of Algorithm 2 in~\cite{DBLP:journals/pvldb/SunDCS20}. It is similar to Greedy++ and we believe it will also perform well in practice. 
+
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\caption{EList++}
+	\SetKwInOut{Input}{Input}
+	\SetKwInOut{Output}{Output}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\rho_{T}$}
+	
+	Initialize the density vector $r \leftarrow 0 \in \mathbb{R}^V$\;
+	
+	\For{$t \leftarrow 1$ \KwTo $T$}{
+		\For{Each $e \in E$}{
+			$u \leftarrow \arg \min_{v \in V:(e, v) \in \mcal{F}} r(v) + \frac{w(e)}{w(v)}$\;
+			$r(u) \leftarrow r(u) + \frac{w(e)}{w(u)}$\;
+		}
+		\tcp{Current density of $u \in V$ is $\frac{r(u)}{t}$. }
+	}
+	$\rho_T = \frac{r}{T}$\;
+	\Return $\rho_T$\;
+\end{algorithm}
+
+
+\subsection{FW-Elist Algorithm}
+
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\SetKwInput{Input}{Input}
+	\SetKwInput{Output}{Output}
+	\SetKwFunction{FrankWolfe}{Frank-Elist}
+	\SetKwProg{Function}{function}{:}{}
+	\Input{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations.}
+	\Output{$\alpha^{(T)}$}
+	
+	%\Function{\FrankWolfe}{$f, \mcal{K}(H)$}{
+		%Set initial $\alpha^{0} \in \mcal{A}(G)$ arbitrarily\;
+		Set initial $\alpha^{(0)} \gets \vec{0}$, $r_0 \gets \vec{0}$\;
+		\For{$t = 1$ to $T$}{
+			$\alpha^{(t)} \gets (1-\frac{2}{t+1})\cdot \alpha^{(t-1)}$\;
+			\For{Each $v \in V$}{
+				$r_t(v) \gets (1-\frac{2}{t+1})\cdot r_{t-1}(v)$\;
+			}
+			\For{Each $e \in E$ in sequentially order}{
+				$u \leftarrow \arg \min_{v \in e} r_t(v) + \frac{2}{t+1} \cdot \frac{w(e)}{w(v)}$ \;
+				$\alpha^{(t)}_{e \to u} \gets \alpha^{(t)}_{e \to u} + \frac{2}{{t+1}} \cdot w(e)$\;	
+				%$r_t(u) \gets r_t(u) + \frac{2}{t+1} \cdot \frac{w(e)}{w(u)}$\;
+				%	\tcp{future.}\tcp{Fix it}
+			}
+		}
+		\Return $\alpha^{(T)}$\;
+		%}
+	
+	\caption{Frank-Wolfe Algorithm}
+	\label{algo:FW-Elist}
+\end{algorithm}
+	
+	
+\begin{definition}[Iterative Proportional Response Plus Momentum]
+	\label{defn:pr-process}
+	Given an instance $(\Izero, \Ione; \mathcal{F}; w)$,
+	suppose for side~$\side \in \B$,
+	$\alpha^{(\side)}_0$ is a refinement
+	on vertex weights in~$\Ib$ such the every non-isolated
+	vertex in $\Iob$ receives non-zero payload from $\alpha^{(\side)}_0$, $\lambda_0 = 0$.
+	
+	Starting from $\alpha^{(\side)}_0$, $\lambda_0$
+	a sequence of refinements is produced as follows.
+	For $t \geq 1$, assuming that $\alpha^{(\side)}_{t-1}$, $\lambda_{t-1}$ is already computed,
+	the following refinements are computed in the $t$-th iteration:
+	\begin{compactitem}
+		\item 
+		\item $\gamma_t = \frac{\lambda_{t-1}-1}{\lambda_t}$, where $\lambda_t^2 - \lambda_t = \lambda_{t-1}^2$.
+		\item $\beta^{(\side)}_{t-1} \gets \alpha^{(\side)}_{t-1} + \gamma_t\cdot (\alpha^{(\side)}_{t-1} - \alpha^{(\side)}_{t-2})$;
+		\item $\alpha^{(\ob)}_{t-1} \gets \msf{PR}(\beta^{(\side)}_{t-1})$;
+		\item $\alpha^{(\side)}_{t} \gets \msf{PR}(\alpha^{(\ob)}_{t-1})$.
+	\end{compactitem}
+\end{definition}
+}

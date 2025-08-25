@@ -1,0 +1,415 @@
+\section{Exact Algorithm}
+\label{sec:exact}
+
+To measure the performance of approximation methods against the target density vector $\rho_*$, we require an efficient implementation for computing the exact density decomposition. Danisch et al.~\cite{DBLP:conf/www/DanischCS17} presented a methodology that computes the exact density decomposition, which is compatible with any iterative subroutine 
+that produces a sequence $\{\alpha^{(t)}\}_{t \geq 0}$ in $\mcal{A}(G)$
+that converges to an optimal solution to $\mathsf{CP}(G)$.
+The main idea is that if $\alpha^{(t)}$ is sufficiently accurate, it can be employed to decompose the graph into \emph{stable blocks}.
+
+
+
+\begin{definition}[Stable Block]\label{defn:stable-block}
+Given a bipartite instance $G=(E, V; \mcal{F}; w)$, suppose $\{(A_\ell, B_\ell)\}_{\ell = 1}^k$ is the density decomposition as in Definition~\ref{def:decomposition}. 
+Then, $(C, D)$ is a stable block if
+there exist $1 \leq i \leq j \leq k$ such that
+$C = \cup_{i \leq \ell \leq j} A_\ell$
+and $D = \cup_{i \leq \ell \leq j} B_\ell$.
+
+If $i = j$, then the stable block $(C, D)$ is atomic.
+\end{definition}
+
+
+\noindent \textbf{Method Overview.}
+The method maintains a list of stable blocks, initially containing only the block $(E, V)$. As the density vector $\rho_t \in \R^V$ induced by $\alpha^{(t)}$ becomes more accurate with an increasing number~$t$ of iterations, the density values suggest possible further splits of a stable block. The adjustments to $\alpha^{(t)}$ can then verify that the resulting constituent blocks are indeed stable. However, when a stable block can no longer be split, a subroutine is required to confirm that the block is indeed atomic.
+As we shall see, one instance of maximum-flow can check whether a stable block is atomic. However,
+when the block is not atomic, the maximum flow solution can actually return a further split.
+
+
+\begin{definition}[$\mathsf{AtomicOrSplit}$]
+\label{defn:atomicsplit}
+Given a bipartite instance $(E, V; \mcal{F}; w)$,
+the subroutine $\mathsf{AtomicOrSplit}$ returns
+one of the following.
+
+\begin{itemize}
+
+\item It confirms that $(E, V)$ is atomic, i.e., the whole $V$ is a densest subset.
+
+
+\item It returns some non-empty $X \subsetneq V$,
+which splits $(E,V)$ into two stable blocks $(\mcal{F}[X], X)$
+and $(E \setminus \mcal{F}[X], V \setminus X)$.
+\end{itemize}
+\end{definition}
+
+
+The subroutine $\mathsf{AtomicOrSplit}$ was not explicitly described in \cite{DBLP:conf/www/DanischCS17}, but a simple implementation based on maximum-flow can be found in the source code. For completeness, we describe the subroutine and provide a brief proof of its correctness
+in Section~\ref{sec:atomic}.
+
+\noindent \textbf{Recursive Exact Decomposition Algorithm.}
+Observe that if a stable block $(C, D)$ in instance~$G$ is not atomic,
+then treating $(C, D)$ as a bipartite instance,
+any stable block obtained from splitting the sub-instance 
+will also be a stable block in~$G$.
+Hence, in practice, when a stable block is small enough, the subroutine $\mathsf{AtomicOrSplit}$ can be repeatedly applied to complete the exact density decomposition.
+
+
+\subsection{Description of $\mathsf{AtomicOrSplit}$}
+\label{sec:atomic}
+
+The main idea is to verify whether
+in an instance $(E, V; \mcal{F}; w)$,
+the set $V$ is a densest subset by a maximum-flow construction.
+
+
+\noindent \textbf{Maximum-Flow Instance~$\widetilde{G}$.}
+From $G$, the instance~$\widetilde{G}$ is constructed as follows.
+
+\begin{enumerate}
+
+\item Each connection $(e, u) \in \mcal{F}$ forms
+an arc from $e$ to $u$ with capacity $+\infty$.
+
+\item Add a source~$s$.  For each $e \in E$,
+add an arc~$(s, e)$ with capacity~$w(e)$.
+
+\item Add a sink~$t$.  For each $u \in V$,
+add an arc~$(u, t)$ with capacity $\lambda \cdot w(u)$,
+where $\lambda := \frac{w(E)}{w(V)}$ is the density of $V$.
+\end{enumerate}
+
+
+
+\begin{algorithm}
+	\SetAlgoLined
+	\KwIn{Bipartite instance $G = (E, V; \mathcal{F}; w)$}
+	\KwOut{Subset $X \subsetneq V$; if $X = \emptyset$, $(E, V)$ is atomic. }
+	Construct $\widetilde{G}$ from $G$ as above.
+	
+	Run maximum-flow algorithm on $\widetilde{G}$ and obtain maximum flow $f$; construct
+	the corresponding residual network $\widetilde{G}_f$.
+	
+	%$f \gets$ maximum flow of $\widetilde{G}$
+	%\tcp{Maintain the residual graph $\widetilde{G}_f$ with respect to $f$}
+	Let $X$ be the nodes in $V$ reachable from the source~$s$ in $\widetilde{G}_f$.
+	
+	\textbf{output} $X$.
+	\caption{$\mathsf{AtomicOrSplit}$} \label{algo:maxflow}
+	\ignore{
+	
+	\tcp{Let $X$ be the hypernodes in $V$ reachable from $s$ in the residual network with respect to the maximum flow. }
+	Find $X$\;
+	\If{$X = \emptyset$}{
+		\textbf{output} $(E, V)$\;
+	}
+	\Else{
+		Find subgraph $G_1$ of $G$ induced by $(\mcal{F}[X], X)$\;
+		Find subgraph $G_2$ of $G$ induced by $(E \backslash \mcal{F}[X], V \backslash X)$\;
+		ExactLD($G_1$)\;
+		ExactLD($G_2$)\;
+	}
+
+}
+\end{algorithm}
+
+
+
+
+\begin{lemma}[Correctness of $\mathsf{AtomicOrSplit}$]\label{lem:maxflow}
+	On an instance $G = (E, V; \mcal{F}; w)$, 
+	the subroutine $\mathsf{AtomicOrSplit}$ in
+	Algorithm~\ref{algo:maxflow} returns a subset~$X \subsetneq V$.
+	Moreover, we have the following.
+	
+	\begin{itemize}
+		\item If $X = \emptyset$, then $(E, V)$ is atomic.
+		%if $X$ is empty, then  part if and only if in $f$, all out-coming edges connected to $s$ are saturated. 
+		\item If $X \neq \emptyset$, then both $(\mcal{F}[X], X)$ and $(E \backslash \mcal{F}[X], V \backslash X)$ are stable blocks.
+		%\item 	Otherwise, if the density decomposition of $G$ has more than one part, then $X \neq \emptyset$ and 
+	\end{itemize}
+\end{lemma}
+\begin{proof}
+First, observe that all the arcs in $\mcal{F}$ have capacity~$+\infty$.
+Therefore, $X = \emptyset$ \emph{iff} in any maximum flow,
+all arcs going out of source~$s$ are saturated, i.e.,
+the maximum flow has value $\sum_{e \in E} w(e) = w(E)$.
+
+	%By the construction of $\widetilde{G}$, any flow in $\widetilde{G}$ can naturally induce a hyperedge weight allocation in $G$. 
+\noindent (I)
+Consider the case $X = \emptyset$. Because every arc $(s, e)$ is saturated
+for all $e \in E$, any maximum flow~$f$ defines
+a weight allocation $\alpha \in \mcal{A}(G)$
+by $\alpha_{e \to u} := f(e,u)$.
+Moreover, the sum of capacities of arcs entering
+sink~$t$ is $\sum_{u \in V} \lambda \cdot w(u) = w(E)$.
+This implies that for every $u \in V$, the amount of flow
+entering $u$ via arcs in $\mathcal{F}$ is exactly $\lambda \cdot w(u)$.
+Hence, for every node~$u$, the allocation $\alpha$ induces
+the density $\rho_\alpha(u) = \lambda$.  This implies that
+$\alpha$ satisfies the local maximin condition;
+by Fact~\ref{fact:loc-maxmin}, the density decomposition of $G$
+has only one component, i.e., $(E, V)$ is atomic.
+
+Conversely, if $(E,V)$ is atomic, then the optimal solution $\alpha \in \mcal{A}(G)$ to
+$\mathsf{CP}(G)$ must induce $\rho_\alpha(u) = \frac{w(E)}{w(V)}$ for all~$u \in V$.
+This implies that $\alpha$ can be used to define a flow with
+value $w(E)$, i.e., all arcs $(s, e)$ are saturated and $X = \emptyset$.
+
+
+\noindent (II) Therefore, for the case $X \neq \emptyset$,
+we know that $(E, V)$ is not atomic.  Specifically,
+the density decomposition 
+$\{(A_\ell, B_\ell)\}_{\ell = 1}^k$ has $k \geq 2$ components.
+Moreover, since $V$ is not a densest subset,
+the maximum density is strictly larger than $\lambda$,
+and some component has density strictly less than~$\lambda$.
+Let $1 \leq i < k$ be the index such that
+for $\ell \leq i$, the density $\rho_\ell$ of $(A_\ell, B_\ell)$ is strictly larger than $\lambda$;
+for $\ell \geq i +1$, the density $\rho_\ell \leq \lambda$.
+
+
+We shall show that for any maximum flow~$f$,
+$D_1 := \cup_{\ell \leq i} B_\ell$ is exactly the nodes in $V$
+that are reachable from $s$ in the residual network~$\widetilde{G}_f$, which immediately implies the result.
+
+We denote $C_1 := \cup_{\ell \leq i} A_\ell$
+and $C_2 := E \setminus C_1$ and $D_2 := V \setminus D_1$.
+From the definition of density decomposition,
+there is no edge in $\mcal{F}$ from $C_1$ to $D_2$.
+
+
+We next show that $S := \{s\} \cup C_1 \cup D_1$ induces a
+minimum cut by constructing a flow that has the same value.
+We start from an optimal solution $\alpha \in \mcal{A}(G)$
+to $\mathsf{CP}(G)$, which must be locally maximin.
+Hence, 
+we can define a feasible flow~$\widehat{f}$ such that 
+in each component~$\ell$, 
+for $(e, u) \in \mcal{F} \cap (A_\ell \times B_\ell)$,
+$\widehat{f}(e,u) = \alpha_{e \to u} \cdot \min\{\frac{\lambda}{\rho_\ell}, 1\}$.
+
+This flow satisfies the property that
+it saturates the arcs from $s$ to $C_2$
+and from $D_1$ to $t$, and has zero flow for
+arcs entering $S$. This proves that 
+$S$ forms a minimum cut. 
+For the rest of the proof, fix some maximum flow~$f$,
+which must also have the above property.
+
+
+We first show that all nodes in~$D_2$ are not reachable
+in the residual network~$\widetilde{G}_f$.
+%Let $\varphi_1$ be the sum of capacities of arcs from $D_1$ to $t$
+%and $\varphi_2$  be that for arcs from $s$ to $C_2$.  These are precisely
+%arcs in the cut induced by $S$, and so the flow $f$ has value $\varphi_1 + \varphi_2$.  Moreover, since this is also the amount of flow
+%entering~$t$, it follows that the amount of flow from $D_2$ to $t$ is exactly~$\varphi_2$, which implies 
+Since there is zero flow in arcs entering~$S$,
+there is no flow
+from $C_2$ to $D_1$.  This means that in the residual network~$\widetilde{G}_f$, there is no backward arc from $D_1$ to $C_2$.
+Because all edges from $s$ to $C_2$ are saturated in~$f$,
+and there is no edge in $\mcal{F}$ from $C_1$ to $D_2$ (due to
+the density decomposition),
+we conclude that all nodes in~$D_2$ are unreachable from~$s$
+in $\widetilde{G}_f$.
+
+We next show that any node in $D_1$ is reachable from~$s$
+in $\widetilde{G}_f$. For the sake of contradiction,
+assume that $\ell \leq i$ is the smallest index
+such that there exists non-empty $Q \subseteq B_\ell$
+that is unreachable from~$s$ in $\widetilde{G}_f$.
+Denote $P := \mcal{F}(Q) \cap A_\ell
+= \{e \in A_\ell: e \cap Q \neq \emptyset\}$.
+
+Since $Q$ is unreachable from~$s$ in $\widetilde{G}_f$,
+all the arcs from $s$ to $P$ are saturated in~$f$.
+Moreover, the density construction means
+that there is no edge in $\mcal{F}$ from $P$
+to $B_{>\ell}$. Also, the choice of $\ell$
+means that there is zero flow in~$f$ from $P$ to
+$B_{<\ell}$, because otherwise
+there would be a backward arc from $B_{<\ell}$ to $P$ in $\widehat{F}_f$.
+The conclusion is that all the saturated flow
+from $s$ to $P$ has to be received by the nodes in $Q$.
+Hence, we can conclude that
+$w(P) \leq \lambda \cdot w(Q)$.
+
+Define $\overline{P} := A_\ell \setminus P$
+and $\overline{Q} := B_\ell \setminus Q$.
+
+Observe that
+$w(\overline{P}) = w(A_\ell) - w(P) 
+\geq \rho_\ell \cdot  w(B_\ell) - \lambda \cdot w(Q) 
+> 0$, because $\rho_\ell > \lambda$.
+Hence, $\overline{P} \neq \emptyset$
+and $\overline{Q}$ is non-empty as well,
+because in the density decomposition,
+ $\mcal{F}_\ell[\overline{Q}]= \overline{P}$.
+
+Finally, we have 
+$\frac{w(\overline{P})}{w(\overline{Q})}
+\geq \frac{\rho_\ell \cdot  w(B_\ell) - \lambda \cdot w(Q) }{w(B_\ell) -  w(Q)} > \rho_\ell$, because $\lambda < \rho_\ell$.
+This contradicts the density decomposition procedure,
+and completes the whole proof.
+\end{proof}
+
+
+\ignore{
+****************************************
+
+The main result of this section is a max-flow based algorithm (refer to Algorithm~\ref{algo:maxflow}) that given a bipartite instance $G=(E, V; \mcal{F}; w)$, it can determine whether the density decomposition of $G$ contains only $1$ part. If not, the algorithm can further divide $G$ into two distinct parts, ${(C_1, D_1), (C_2, D_2)}$, where each part is the union of consecutive parts in the exact density decomposition. 
+
+This algorithm can be applied to obtain an exact density decomposition (refer to Algorithm~\ref{algo:exact}). Furthermore, it is plausible to integrate this algorithm with an approximate algorithm to speed-up the exact density decomposition algorithm. 
+
+
+We define the notion of stable decomposition.
+
+\begin{definition}[Stable Decomposition]
+	Given a bipartite instance $G=(E, V; \mcal{F}; w)$, suppose $\{(A_\ell, B_\ell)\}_{\ell}$ is the density decomposition of $G$. 
+	The sequence $\{(C_i, D_i)\}_{i}$ is a stable decomposition if the following holds:
+	\begin{itemize}
+		\item It is a partition of $(E, V)$.
+		\item For any $i$, $(C_i, D_i)$ is the union of consecutive parts in $\{(A_\ell, B_\ell)\}_{\ell}$. In other words, $\forall i$, $\exists x, y$, such that $C_i = \bigcup_{x\leq \ell \leq y} A_\ell$, $D_i = \bigcup_{x\leq \ell \leq y} B_\ell$. 
+	\end{itemize}
+\end{definition}
+
+
+\subsection{A maximum flow based algorithm}
+%The main result of this section is the following theorem. Basically, 
+
+%Given a stable approximate density decomposition, there is an algorithm that can determine whether each part appears in the exact decomposition. And if not, the algorithm can further decompose the part correctly. The algorithm is inspired from \cite{DBLP:conf/www/TattiG15}. 
+
+In this section we present the max-flow based algorithm. 
+
+Given a bipartite instance $G = (E, V; \mcal{F}; w)$, we construct a flow network $\widetilde{G}$ as follows. Let parameter $a = \frac{w(E)}{w(V)}$. Let $s$ be the source, let $t$ be the sink. $s$ connects every $e \in E$. For any edge $e \in E$, the capacity $c_{s\to e}$ of edge $(s, e)$ is $w(e)$. The capacity $c_{e \to s}$ of edge $(e, s)$ is $0$. For any $(e, v) \in \mcal{F}$, the capacity $c_{e \to v}$ is $2 \cdot w(e)$, $c_{v \to e}$ is $0$. $t$ connects every $v \in V$. For any $v\in V$, the capacity $c_{v\to t}$ is $a \cdot w(v)$, the capacity $c_{t\to v} = 0$. 
+
+
+
+ 
+
+The following Lemma states that $X$ gives useful information on the density decomposition of $G$. 
+
+%from the flow network $\widetilde{G}$, there exists an algorithm that can determine whether the density decomposition of $G$ contains one part, if not, the algorithm returns a decomposition $\{(C_1, D_1), (C_2, D_2)\}$ that is stable. 
+
+
+
+	\subsection{Exact Algorithm}
+
+The exact decomposition algorithm uses Lemma~\ref{lem:maxflow} to guide the decomposition process. Starting by the extreme stable decomposition $\{(E, V)\}$, the algorithm will check whether the current part can be further decomposed. If yes, it will decompose the current part into two parts guided by Lemma~\ref{lem:maxflow}. Then recurse on the two induced subgraphs. 
+If no, it will output the current part because it appears in the exact density decomposition. 
+
+
+\begin{algorithm}\label{algo:exact}
+	\SetAlgoLined
+	\KwIn{Bipartite instance $G = (E, V; \mathcal{F}; w)$}
+	\KwOut{Density Decomposition of $G$}
+	$X \gets \text{Decompose}(G)$\;
+	\If{$X = \emptyset$}{
+		\textbf{output} $(E, V)$\;
+	}
+	\Else{
+	Find subgraph $G_1$ of $G$ induced by $(\mcal{F}[X], X)$\;
+	Find subgraph $G_2$ of $G$ induced by $(E \backslash \mcal{F}[X], V \backslash X)$\;
+	ExactLD($G_1$)\;
+	ExactLD($G_2$)\;
+	}
+	\caption{ExactLD($G$)}
+\end{algorithm}
+
+Note that we not only can apply  Algorithm~\ref{algo:exact} to the extreme stable decomposition $\{(E, V)\}$, but also apply Algorithm~\ref{algo:exact} to each corresponding subgraph in any stable decomposition. This might make the decomposition algorithm more efficient. 
+
+ %Algorithm~\ref{algo:exact} to the 
+%Note that given a stable decomposition, for each corresponding subgraph, we can apply Algorithm~\ref{algo:exact} to each part to obtain an exact density decomposition. 
+
+%induced by the each part in the decomposition, 
+
+From a hyperedge weight allocation $\alpha$, Algorithm 3 in \cite{DBLP:conf/www/DanischCS17} gives an algorithm that returns a stable density decomposition. We can use algorithms in \cite{DBLP:conf/www/DanischCS17} to obtain a stable density decomposition. Then apply Algorithm~\ref{algo:exact} to further decompose. This might speed-up the decomposition. 
+
+%we can apply Algorithm~\ref{algo:exact} to each subgraph induced by each 
+
+%
+\ignore{
+
+%In other words, the algorithm can determine whether a decomposition can be further decomposed. If yes, it can decompose .
+
+%In essence, the algorithm can determine the potential for additional decomposition within a given structure. If such decomposition is feasible, the algorithm executes the process accurately.
+
+
+
+%The main result of this section is a max-flow based algorithm that given a bipartite instance $G=(E, V; \mcal{F}; w)$, it can determine whether the decomposition of $G$ contains only $1$ part. And if not, the algorithm can further decompose $G$ into two parts, $\{(C_1, D_1), (C_2, D_2)\}$, such that each part is the union of consecutive parts in the exact density decomposition. In other word, the algorithm can determine whether a decomposition can be further decomposed. If yes, it can further decompose correctly. 
+%We can use this algorithm to obtain a correct density decomposition (Algorithm~\ref{algo:exact}). It's also possible to combine this algorithm with an approximate algorithm to obtain an efficient algorithm in practice. 
+
+
+%This can help us design an algorithm for the exact density decomposition, and also help us design an efficient algorithm for the exact density decomposition in practice with the help of a approximate density vector. 
+	
+In this section we will introduce a notion of approximate density decomposition. And we will present an algorithm that can return such approximate density decomposition. From this decomposition, an exact density decomposition can be computed efficiently. 
+
+The following definition extends the approximate density decomposition in \cite{DBLP:conf/www/DanischCS17}. 
+
+\begin{definition}[Approximate Decomposition]\label{defn:approx-decom}
+	Given a bipartite instance $G=(E, V; \mcal{F}; w)$, suppose $\{(B_\ell)\}_{1\leq \ell \leq k}$ is the density decomposition of $G$. It induces a sequence $\{U_\ell\}_{1\leq \ell \leq k}$ such that for any $1\leq \ell \leq k$, $U_\ell = \bigcup_{i\leq \ell}B_i$. 
+	Suppose $\{C_\ell\}_{1\leq \ell \leq m}$ is a sequence of vertices. It induces a sequence $\{W_\ell\}_{1\leq \ell \leq m}$ such that for any $1\leq \ell \leq k$, $W_\ell = \bigcup_{i\leq \ell}C_i$. 
+	 Then, for $\epsilon > 0$, the sequence $\{C_\ell\}_{1\leq \ell \leq m}$ is an $\epsilon$-approximate density decomposition if the following holds: 
+	 \begin{itemize}
+	 	\item $\{C_\ell\}_{1\leq \ell \leq m}$ is a partition of $V$. 
+	 	\item $\{W_\ell\}_{1\leq \ell \leq m}$ is a subsequence of $\{U_\ell\}_{1\leq \ell \leq k}$. 
+	 	\item For any $2 \leq i \leq m$, let $H_i = (E_i, V_i; \mcal{F}_i; w_i)$ be the sub-instance of $G$ after removing $W_{i-1}$ and $\mcal{F}[W_{i-1}]$. For any $S \subseteq V_i$, $\frac{\mcal{F}_i[S]}{S} \leq (1+\epsilon)\cdot \frac{\mcal{F}_i[W_i]}{W_i}$.
+	 \end{itemize}
+\end{definition}
+
+\begin{definition}[Stable Decomposition]
+	Given a bipartite instance $G=(E, V; \mcal{F}; w)$, suppose $\{(B_\ell)\}_{1\leq \ell \leq k}$ is the density decomposition of $G$. 
+	The sequence of vertices $\{C_\ell\}_{1\leq \ell \leq m}$ is a stable decomposition if it satisfies the first two points in Definition~\ref{defn:approx-decom}. 
+\end{definition}
+
+Algorithm 3 in \cite{DBLP:conf/www/DanischCS17} can return an approximate decomposition. Since the decomposition is stable, the algorithm can do some maximum flow based algorithm to further decompose each part in the approximate decomposition. By doing so an exact decomposition can be returned. The following algorithm is based on Algorithm 3 in \cite{DBLP:conf/www/DanischCS17}. We observe that Line 4 Algorithm 3 in \cite{DBLP:conf/www/DanischCS17} can be replaced by any algorithm that can approximate the density vector. And the objective of Line 5 and 6 is to extract the stable decomposition. We put them in the same line. Line 10 of the original algorithm does not apply to the hypergraphs. In this section, we will present an algorithm that can further decompose a stable approximate density decomposition. 
+
+
+%We observe that line 4 in Algorithm 3 in \cite{DBLP:conf/www/DanischCS17} can be replaced by any algorithm that can approximate the density vector. Line 3 in Algorithm~\ref{algo:exact-decom} is 
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\label{algo:exact-decom}
+	\caption{Approximate/Exact Decomposition}
+	\KwIn{Bipartite instance $G = (E, V; \mathcal{F}; w)$, number~$T$ of iterations, $\epsilon \in \mathbb{R}^+$}
+	\KwOut{The exact/approximate decomposition of G}
+	\Repeat{$\delta \leq \epsilon$}{
+		$\rho \leftarrow \text{Approximate-Algorithm}(G, T)$\;
+		%$B \leftarrow \text{TryDecompose}(G, r)$\;
+		$\mcal{D} \leftarrow \text{ExtractStableSubsets}(G, \mcal{D}, r, \alpha)$\;
+		$\delta \leftarrow \text{EstimateError}(G, \mcal{D}, r)$\;
+	}
+	\If{the exact decomposition is required}{
+		$\mcal{D} \leftarrow$ further decomposition of $\mcal{D}$ by running the max-flow algorithm. 
+	}
+	\KwRet{B}
+\end{algorithm}
+
+
+
+
+Given a permutation and $\rho_*$, the number of inversion of this permutation and $\rho_*$. 
+
+
+\begin{algorithm}
+	\caption{Approximate/Exact Decomposition}
+	\begin{algorithmic}[1]
+		\State \textbf{Input:} $G = (V, E, w), \epsilon \in \mathbb{R}^+, T \in \mathbb{Z}^+$
+		\State \textbf{Output:} The exact/approximate decomposition of $G$
+		\Repeat
+		\State $(\alpha, r) \gets$ Frank-Wolfe$(G, T)$
+		\State $B \gets$ TryDecompose$(G, r)$
+		\State $B \gets$ ExtractStableSubsets$(G, B, r, \alpha)$
+		\State $\delta \gets$ EstimateError$(G, B, r)$
+		\Until $\delta > \epsilon$
+		\If{the exact decomposition is required}
+		\State $B \gets$ further decomposition of $B$ by running the max. flow algorithm in [38] in parallel for each set $B_{i+1} \setminus B_i$
+		\EndIf
+		\State \textbf{return} $B$
+	\end{algorithmic}
+\end{algorithm}
+
+}
+
+}
+
+
