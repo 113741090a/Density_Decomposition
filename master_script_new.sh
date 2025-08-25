@@ -21,6 +21,7 @@ GPP_CMD="g++"
 #unzip Boost/boost_1_86_0
 cat Boost.zip.part* > Boost.zip
 
+unzip Boost.zip
 
 
 
