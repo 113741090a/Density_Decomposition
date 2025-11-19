@@ -2,7 +2,9 @@
 
 
 # datasets names
-params=("amazon.txt" "dblp.txt" "roadnet-PA.txt" "roadnet-CA.txt" "web-google.txt" "patent.txt" "top-cats.txt" "orkut.txt") # "orkut.txt"
+#params=("amazon.txt" "dblp.txt" "roadnet-PA.txt" "roadnet-CA.txt" "web-google.txt" "patent.txt" "top-cats.txt" "orkut.txt") # "orkut.txt"
+
+params=("facebook.txt") # "amazon.txt" "web-google.txt" "orkut.txt"  "roadnet-PA.txt" "roadnet-CA.txt" "web-google.txt" "patent.txt" "top-cats.txt" "orkut.txt"
 # locations of your program
 normal_program="./normal/test_time"
 hyper_program="./hyper/test_time_hyper"

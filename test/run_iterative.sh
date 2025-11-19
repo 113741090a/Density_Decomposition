@@ -11,37 +11,27 @@ GPP_CMD="g++"
 # Folder name where the data for each dataset is stored. 
 OUTPUT_PATHS=(
     "facebook"
-    "amazon"  
-    "web-google"
     # You can add more output paths
 )
 
 
 BIPARTITE_NAMES=(
     "facebook.txt"
-    "amazon.txt"  # New name for the first dataset's bipartite_hyper.txt
-    "web-google.txt"
 )
 
 
 HYPER_NAMES=(
     "facebook.txt"
-    "amazon.txt"  # New name for the first dataset's bipartite_hyper.txt
-    "web-google.txt"
 )
 
 # The number of iterations for normal graph
 ITERATION_COUNTS1=(
     "800"
-    "1400"  
-    "1200"
 )
 
 # The number of iterations for hypergraph
 ITERATION_COUNTS2=(
     "800"
-    "400"  # Iteration count for the first dataset
-    "1200"
     # You can add more iteration counts
 )
 
