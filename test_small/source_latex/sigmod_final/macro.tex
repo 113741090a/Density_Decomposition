@@ -1,0 +1,479 @@
+%\usepackage{scalerel}
+\newcommand\Dag{{\scalerel*{\dag}{X}}}
+
+
+
+%\usepackage{stretchrel}
+\newcommand\sdag{{\stretchrel*{\dag}{X}}}
+
+
+\newcommand{\Trans}{{\normalfont \texttt{T}}}
+\newcommand{\Point}{{\normalfont \texttt{P}}}
+
+\newcommand{\Array}{{\normalfont \texttt{Arr}}}
+
+\newcommand{\MP}{{\normalfont \texttt{MP}}}
+\newcommand{\MPone}{{\normalfont \texttt{MP1}}}
+\newcommand{\MPtwo}{{\normalfont \texttt{MP2}}}
+\newcommand{\MPS}{{\normalfont \texttt{MPS}}}
+\newcommand{\HD}{{\normalfont \texttt{HD}}}
+\newcommand{\VP}{{\normalfont \tilde{\texttt{k}}}}
+\newcommand{\verif}{{\normalfont \texttt{k}}}
+\newcommand{\voteone}{{\normalfont \texttt{v1}}}
+\newcommand{\votetwo}{{\normalfont \texttt{v2}}}
+\newcommand{\error}{{\normalfont \texttt{E}}}
+
+\newcommand{\poly}{{\normalfont \texttt{poly}}}
+
+
+%\newcommand{\agree}{{\normalfont \texttt{L}}}
+\newcommand{\agree}{\ensuremath{\mathfrak{L}}}
+
+\newcommand{\disagree}{{\normalfont \texttt{D}}}
+\newcommand{\codeword}{{\normalfont \texttt{W}}}
+\newcommand{\counter}{{\normalfont \texttt{CNT}}}
+\newcommand{\bias}{{\normalfont \texttt{B}}}
+\newcommand{\core}{{\sf core}}
+\newcommand{\stringx}{{\normalfont \texttt{X}}}
+\newcommand{\stringy}{{\normalfont \texttt{Y}}}
+\newcommand{\strings}{{\normalfont \texttt{S}}}
+
+\newcommand{\sset}{{\normalfont S}}
+
+\newcommand{\listen}{\text{listen}}
+\newcommand{\eps}{\epsilon}
+
+\newcommand{\bbox}{\texttt{BlackBox}}
+
+\newcommand{\lhash}{\ensuremath{\mathcal{H}}}
+\newcommand{\lseed}{\texttt{S}}
+\newcommand{\shash}{\ensuremath{\mathcal{G}}}
+\newcommand{\sseed}{\texttt{S}}
+
+\newcommand{\algorithmfontsize}{\footnotesize}
+
+\newcounter{note}[section]
+\newcommand{\hubert}[1]{\refstepcounter{note}$\ll${\sf Hubert's
+        Comment~\thenote:} {\sf \textcolor{blue}{#1}}$\gg$\marginpar{\tiny\bf HC~\thenote}}
+\newcommand{\zhibin}[1]{\refstepcounter{note}$\ll${\sf Zhibin's
+        Comment~\thenote:} {\sf \textcolor{red}{#1}}$\gg$\marginpar{\tiny\bf ZB~\thenote}}
+\newcommand{\quan}[1]{\refstepcounter{note}$\ll${\sf Quan's
+		Comment~\thenote:} {\sf \textcolor{red}{#1}}$\gg$\marginpar{\tiny\bf Quan~\thenote}}
+
+\newcommand{\elaine}[1]{{\footnotesize\color{magenta}[Elaine: #1]}}
+\newcommand{\yuetodo}[1]{{\large\color{green}[Yue todo: #1]}}
+\newcommand{\weikai}[1]{{\footnotesize\color{maroon}[Weikai: #1]}}
+\definecolor{yue}{rgb}{0.7, 0, 0}
+\newcommand{\yueguo}[1]{{\footnotesize\color{yue}[Yue: #1]}}
+%\renewcommand{\elaine}[1]{}
+%\renewcommand{\hubert}[1]{}
+%\renewcommand{\weikai}[1]{}
+%\renewcommand{\yueguo}[1]{}
+\renewcommand{\yuetodo}[1]{}
+
+
+
+
+\newcommand{\highlightkeyword}[2][\ ]{\ensuremath{\textrm{#2}}#1}
+\newcommand{\msf}[1]{\ensuremath{{\mathsf {#1}}}}
+%\newcommand{\mtt}[1]{\ensuremath{\mathtt {#1}}}
+\newcommand{\mf}[1]{\ensuremath{\mathfrak {#1}}}
+\newcommand{\mcal}[1]{\ensuremath{\mathcal {#1}}}
+\newcommand{\fsgx}{{\color{darkred}{\ensuremath{\mcal{G}_{\textrm{sgx}}}}}\xspace}
+\newcommand{\ftpm}{{\color{darkred}{\ensuremath{\mcal{G}_{\textrm{tpm}}}}}\xspace}
+\newcommand{\fsgxrelax}{{\color{darkred}{\ensuremath{\widetilde{\mcal{G}}_{\textrm{sgx}}}}}\xspace}
+\newcommand{\ftpmrelax}{{\color{darkred}{\ensuremath{\widetilde{\mcal{G}}_{\textrm{tpm}}}}}\xspace}
+\newcommand{\foutsource}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{outsrc}}}}}\xspace}
+\newcommand{\fenclave}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{enclave}}}}}\xspace}
+\newcommand{\fsc}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{sc}}}}}\xspace}
+\newcommand{\fauth}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{auth}}}}}\xspace}
+\newcommand{\fstatefulobf}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{statefulobf}}}}}\xspace}
+\newcommand{\fsgxprime}{{\color{darkred}{\ensuremath{\widehat{\mcal{G}}_{\textrm{sgx}}}}}\xspace}
+\newcommand{\fcom}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{com}}}}}\xspace}
+\newcommand{\ftwopc}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{2pc}}}}}\xspace}
+\newcommand{\fmpc}{{\color{darkred}{\ensuremath{\mcal{F}_{\textrm{mpc}}}}}\xspace}
+
+%\newcommand{\poly}{\ensuremath{{\sf poly}}\xspace}
+
+\newcommand{\nex}{{\ensuremath{\mathsf{next}}}\xspace}
+
+\newcommand{\algM}{{\color{darkred}\ensuremath{\mcal{M}}}\xspace}
+\newcommand{\algS}{{\color{darkred}\ensuremath{\mcal{S}}}\xspace}
+\newcommand{\algC}{{\color{darkred}\ensuremath{\mcal{C}}}\xspace}
+\newcommand{\algP}{{\color{darkred}\ensuremath{\mcal{P}}}\xspace}
+\newcommand{\algPi}{{\color{darkred}\ensuremath{\mcal{P}_i}}\xspace}
+\newcommand{\algPj}{{\color{darkred}\ensuremath{\mcal{P}_j}}\xspace}
+\newcommand{\algPone}{{\color{darkred}\ensuremath{\mcal{P}_1}}\xspace}
+\newcommand{\algPn}{{\color{darkred}\ensuremath{\mcal{P}_n}}\xspace}
+\newcommand{\algR}{{\color{darkred}\ensuremath{\mcal{R}}}\xspace}
+\newcommand{\algA}{{\ensuremath{\mcal{A}}}\xspace}
+\newcommand{\adv}{{\color{darkred}\ensuremath{\mcal{A}}}\xspace}
+\newcommand{\envi}{{\color{darkred}\ensuremath{{\mcal{Z}}}}\xspace}
+\newcommand{\algZ}{{\color{darkred}\ensuremath{{\mcal{Z}}}}\xspace}
+\newcommand{\Sim}{\ensuremath{\msf{Sim}}\xspace}
+%\newcommand{\st}{\ensuremath{{\it st}}\xspace}
+
+\newcommand{\ceil}[1]{\ensuremath{\left \lceil #1 \right \rceil}}
+\newcommand{\floor}[1]{\ensuremath{\left \lfloor #1 \right \rfloor}}
+
+\newcommand{\ent}{\ensuremath{\mathsf{ent}}}
+
+\newcommand{\Extend}{\ensuremath{\mathsf{Extend}}}
+
+
+\newcommand{\Bin}{\ensuremath{\mathsf{Binary}}}
+\newcommand{\ve}{\ensuremath{\varepsilon}}
+
+
+\newcommand{\ct}{\ensuremath{{\sf ct}}\xspace}
+\newcommand{\type}{\ensuremath{{\sf type}}\xspace}
+\newcommand{\authenc}{\ensuremath{{\sf AE}}}
+
+
+\newcommand{\greedypp}{\mbox{\ensuremath{\mathsf{Greedy}}++}\xspace}
+\newcommand{\elist}{\ensuremath{\mathsf{EList}}++\xspace}
+\newcommand{\kclist}{\ensuremath{\mathsf{KClist}}++\xspace}
+\newcommand{\fista}{\ensuremath{\mathsf{FISTA}}\xspace}
+\newcommand{\fw}{\ensuremath{\mathsf{FW}}\xspace}
+\newcommand{\pr}{\ensuremath{\mathsf{PR}}\xspace}
+\newcommand{\prlin}{\ensuremath{\mathsf{PR\_LIN}}\xspace}
+\newcommand{\prexp}{\ensuremath{\mathsf{PR\_EXP}}\xspace}
+
+%\newcommand{\view}{\ensuremath{{\sf view}}\xspace}
+
+\newcommand{\ie}{i.e.\xspace}
+\newcommand{\eg}{e.g.\xspace}
+
+\newcommand{\TODO}[1]{\noindent
+\colorbox{green!20}{
+\parbox{0.98\textwidth}{
+#1
+}}
+}
+
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{lightblue}{RGB}{0,176,240}
+\definecolor{darkblue}{RGB}{0,112,192}
+\definecolor{lightpurple}{RGB}{124, 66, 168}
+%\definecolor{orange}{rgb}{1,0.5,0}
+\definecolor{grey}{RGB}{139, 137, 137}
+\definecolor{maroon}{RGB}{178, 34, 34}
+\definecolor{green}{RGB}{34, 139, 34}
+\definecolor{types}{RGB}{72, 61, 139}
+%\definecolor{gold}{rgb}{0.85, 0.65, 0.13}
+\definecolor{gold}{rgb}{0.8, 0.33, 0.0}
+
+\newcommand{\sred}[1]{{\color{maroon} \msf{#1}}}
+\newcommand{\sblue}[1]{{\color{lightblue} {#1}}}
+\newcommand{\spurple}[1]{{\color{lightpurple} \msf{#1}}}
+\newcommand{\sorange}[1]{{\color{orange} \msf{#1}}}
+\newcommand{\sgold}[1]{{\color{gold} {#1}}}
+\newcommand{\smaroon}[1]{{\color{maroon} {#1}}}
+\newcommand{\sgrey}[1]{{\color{grey} \msf{#1}}}
+\newcommand{\sseablue}[1]{{\color{darkblue} {\bf #1}}}
+\newcommand{\sdarkgreen}[1]{{\color{darkgreen} {#1}}}
+\newcommand{\sdarkblue}[1]{{\color{darkblue} {#1}}}
+
+\definecolor{darkgray}{gray}{0.3}
+\newcommand{\cgray}[1]{{\color{darkgray} {#1}}}
+\newcommand{\sgray}[1]{{\color{gray!100} {#1}}}
+%\newcommand{\skiptext}[1]{}
+%\newcommand{\envi}{\ensuremath{{\sf env}}\xspace}
+\newcommand{\msg}{\ensuremath{{{\sf msg}}}\xspace}
+\newcommand{\owf}{\ensuremath{{{\sf owf}}}\xspace}
+\newcommand{\comm}{\ensuremath{{{\sf com}}}\xspace}
+\newcommand{\mpc}{\ensuremath{{{\sf mpc}}}\xspace}
+\newcommand{\getr}{\ensuremath{{\overset{\$}{\leftarrow}}}\xspace}
+\newcommand{\some}{{some \xspace}}
+
+\newcommand{\Prot}{\ensuremath{{{\bf Prot}}}\xspace}
+
+\newcommand{\install}{{\color{darkblue} \ensuremath{{{\tt install}}}\xspace}}
+\newcommand{\resume}{{\color{darkblue} \ensuremath{{{\tt resume}}}\xspace}}
+\newcommand{\getpk}{{\color{darkblue} \ensuremath{{{\tt getpk}}}\xspace}}
+\newcommand{\corrupt}{{\color{darkblue} \ensuremath{{{\tt corrupt}}}\xspace}}
+\newcommand{\sign}{{\color{darkblue} \ensuremath{{{\tt sign}}}\xspace}}
+
+\newcommand{\pkM}{\ensuremath{{\sf mpk}}\xspace}
+\newcommand{\skM}{\ensuremath{{\sf msk}}\xspace}
+
+
+
+\newcommand{\onrcv}{\xspace\sblue{On~receive}\xspace}
+\newcommand{\oninp}{\xspace\sblue{On~input}\xspace}
+\newcommand{\oncall}{\xspace\sblue{On~call}\xspace}
+
+\newcommand{\onrcvonce}{\xspace\sdarkgreen{On~receive}\xspace}
+\newcommand{\oninponce}{\xspace\sdarkgreen{On~input}\xspace}
+\newcommand{\pcforall}{{\bf for all}\xspace}
+
+\newcommand{\progcomment}[1]{\cgray{\small \it //~#1}}
+
+% vars
+\newcommand{\inpfsgx}{{\ensuremath{{{\color{black}\sf inp}}}}}
+\newcommand{\inp}{{\ensuremath{{{\color{black}\sf inp}}}}}
+\newcommand{\outpfsgx}{{\ensuremath{{{\color{black}\sf outp}}}}}
+\newcommand{\outp}{{\ensuremath{{{\color{black}\sf outp}}}}}
+\newcommand{\regfsgx}{{\ensuremath{{{\color{black}\sf reg}}}}}
+
+% keywords
+\newcommand{\memfsgx}{{\ensuremath{\sf{{\color{black}mem}}}}}
+\newcommand{\prog}{{\ensuremath{\sf{{\color{black}prog}}}}}
+\newcommand{\progfsgx}{{\ensuremath{\sf{{\color{black}prog}}}}}
+\newcommand{\iffsgx}{{\xspace{{\color{black}if}}\xspace}}
+
+% operations
+\newcommand{\assertfsgx}{{assert}\xspace}
+\newcommand{\recordfsgx}{{record}\xspace}
+\newcommand{\sendfsgx}{{\color{darkblue}{asend}}\xspace}
+\newcommand{\secsendfsgx}{{\color{darkblue}{ssend}}\xspace}
+\newcommand{\letfsgx}{{let}\xspace}
+\newcommand{\returnfsgx}{{return}\xspace}
+
+% strings
+\newcommand{\stringfsgx}[1]{{\color{brown}\textrm{``{#1}''}}}
+\newcommand{\party}[1]{{{\color{darkred}#1}}\xspace}
+\newcommand{\func}[1]{\ensuremath{{\color{darkred}\mcal{#1}}}\xspace}
+
+% lineno
+\newcommand{\lnn}[1]{\small{\texttt{#1}}\xspace}
+
+
+\definecolor{darkred}{rgb}{0.5, 0, 0}
+\definecolor{darkgreen}{rgb}{0, 0.5, 0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+
+\newcommand\markx[2]{}
+\newcommand\markme[1]{\markx{ME}{#1}}
+\newcommand\markjim[1]{\markx{JIM}{#1}}
+\newcommand\marka[1]{\markx{R1}{#1}}
+\newcommand\markb[1]{\markx{R2}{#1}}
+\newcommand\markc[1]{\markx{R3}{#1}}
+
+\newcommand{\marknew}{}
+\newcommand{\DB}{\mathbf{DB}}
+\newcommand{\model}{\mathbf{\Omega}}
+
+%\newcommand{\authnote}[2]{{\bf #1 : #2}}
+%\newcommand{\authnote}[2]{}
+
+\newcommand{\david}[1]{{\authnote{david}{#1}}}
+%\newcommand{\runting}[1]{{\authnote{runting}{#1}}}
+\newcommand{\runting}[1]{{\footnotesize\color{red}[runting: #1]}}
+\newcommand{\kartik}[1]{{\footnotesize\color{blue}[kartik: #1]}}
+\newcommand{\futureresearch}[1]{{\footnotesize\color{red}[dawn: #1]}}
+\newcommand{\jim}[1]{{\authnote{jim}{#1}}}
+%\newcommand{\dawn}[1]{{\authnote{dawn}{#1}}}
+\newcommand{\zk}[1]{{\authnote{zk}{#1}}}
+\newcommand{\cody}[1]{{\authnote{cody}{#1}}}
+\newcommand{\heng}[1]{{\authnote{heng}{#1}}}
+\newcommand{\name}{Circuit OPRAM\xspace}
+%\newcommand{\aname}{an Elixir\xspace}
+%\newcommand{\Aname}{An Elixir\xspace}
+
+\newcommand{\pid}{{\color{darkgray}\mathit{pid}}}
+\newcommand{\idx}{{\color{darkgray}\mathit{idx}}}
+\newcommand{\eid}{{\color{darkgray}\mathit{eid}}}
+\newcommand{\sid}{{\color{darkgray}\mathit{sid}}}
+\newcommand{\ssid}{{\color{darkgray}\mathit{ssid}}}
+%\newcommand{\sk}{\mathsf{sk}}
+%\newcommand{\pk}{\mathsf{pk}}
+%\newcommand{\idx}{\mathit{idx}}
+%\newcommand{\poly}{\mathit{poly}}
+\newcommand{\pc}{{\tt pc}}
+\newcommand{\op}{\ensuremath{\mathsf{op}}\xspace}
+\newcommand{\reg}{{\tt reg}}
+\newcommand{\regs}{{\tt regs}}
+\newcommand{\raddr}{{\tt raddr}}
+\newcommand{\waddr}{{\tt waddr}}
+
+
+\renewcommand{\path}{\ensuremath{\mathsf{path}}\xspace}
+\newcommand{\block}{{\sf block}}
+
+
+\newcommand{\src}{{\sf src}}
+\newcommand{\dst}{{\sf dst}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\B}{\mathbb{B}}
+
+\newcommand{\Path}{{\sf path}}
+\newcommand{\posmap}{{\sf posmap}}
+\newcommand{\dataopram}{\ensuremath{{\sf data}\text{-}{\sf OPRAM}}\xspace}
+\newcommand{\posopram}{\ensuremath{{\sf pos}\text{-}{\sf OPRAM}}\xspace}
+\newcommand{\posoprams}{\ensuremath{{\sf pos}\text{-}{\sf OPRAM}\text{s}}\xspace}
+%\newcommand{\root}{{\sf root}}
+
+
+\newcommand{\data}{{\ensuremath{\mathsf{data}}}\xspace}
+\newcommand{\addr}{{\ensuremath{\mathsf{addr}}}\xspace}
+\newcommand{\addrd}[1]{{\ensuremath{\mathsf{addr}^{\langle #1 \rangle}}}\xspace}
+\newcommand{\addrsd}[2]{{\ensuremath{\mathsf{addr}_{#1}^{\langle #2 \rangle}}}\xspace}
+\newcommand{\Ud}[1]{{\ensuremath{U^{\langle #1 \rangle}}}\xspace}
+\newcommand{\phaddr}{{\ensuremath{\mathsf{phaddr}}}\xspace}
+\newcommand{\fetched}{{\ensuremath{\mathsf{fetched}}}\xspace}
+\newcommand{\wdata}{{\tt wdata}}
+\newcommand{\rdata}{{\tt rdata}}
+\newcommand{\ORAM}{{\sf ORAM}}
+\newcommand{\OPRAM}{{\sf OPRAM}}
+\newcommand{\OTM}{{\sf OTM}}
+\newcommand{\rlvl}{d}
+\newcommand{\RLVL}{D}
+\newcommand{\rpos}{{\sf rpos}}
+\newcommand{\lpos}{{\sf lpos}}
+\newcommand{\aux}{{\sf aux}}
+\newcommand{\elem}{{\sf elem}}
+\newcommand{\pair}{{\sf pair}}
+\newcommand{\used}{{\beta}}
+\newcommand{\arr}{{\sf arr}}
+\newcommand{\negl}{{\sf negl}}
+\newcommand{\reqs}{{\sf reqs}}
+%\newcommand{\bLeft}{{\sf b}_0}
+%\newcommand{\bRight}{{\sf b}_1}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\G}{\mathbb{G}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\rank}{\mathsf{rank}}
+\newcommand{\EvalPoly}{\mathsf{EvalPoly}}
+
+
+\newcommand{\side}{\iota}
+\newcommand{\Ib}{\mcal{I}^{(\side)}}
+\newcommand{\Iob}{\mcal{I}^{(\overline{\side})}}
+\newcommand{\ob}{\overline{\side}}
+
+\newcommand{\Izero}{\mcal{I}^{(0)}}
+\newcommand{\Ione}{\mcal{I}^{(1)}}
+
+\newcommand{\LP}{\mathsf{LP}}
+\newcommand{\DP}{\mathsf{DP}}
+
+
+\newcommand{\SEE}{SEE\xspace}
+\newcommand{\aSEE}{a SEE\xspace}
+\newcommand{\ignore}[1]{}
+\newcommand{\etal}{\textit{et al.}\xspace}
+
+%\renewcommand{\paragraph}[1]{\vspace{6pt}\noindent\textbf{#1}}
+\newcommand{\squish}{
+      \setlength{\topsep}{0pt}
+      \setlength{\itemsep}{0ex}
+      \vspace{-1ex}
+      \setlength{\parskip}{0pt}}
+
+
+\newcommand{\pksgx}{\ensuremath{{\sf pk}_{\textrm{sgx}}}}
+\newcommand{\sksgx}{\ensuremath{{\sf sk}_{\textrm{sgx}}}}
+\newcommand{\user}{\ensuremath{{\sf U}}}
+\newcommand{\sk}{\ensuremath{{\sf sk}}}
+%\renewcommand{\Read}{\ensuremath{{\tt read}}\xspace}
+%\renewcommand{\Write}{\ensuremath{{\tt write}}\xspace}
+%\newcommand{\data}{\ensuremath{{\sf data}}}
+%\newcommand{\fetched}{\ensuremath{{\sf fetched}}}
+\newcommand{\prf}{\ensuremath{{\sf PRF}}}
+\renewcommand{\H}{\ensuremath{{\sf H}}}
+\newcommand{\T}{\ensuremath{{\sf T}}}
+\newcommand{\level}{\ensuremath{{\sf T}}}
+\newcommand{\buffer}{\ensuremath{{\sf Buf}}}
+\newcommand{\Cnt}{\ensuremath{{\sf C}}}
+\newcommand{\ppt}{\ensuremath{{\text{p.p.t.}}}\xspace}
+%\newcommand{\cpus}{\ensuremath{{\text{CPUs}}}\xspace}
+
+
+
+\newcounter{task}
+\newenvironment{task}[1]{ \refstepcounter{task} \paragraph{Task T\arabic{task}: #1}}{}
+
+
+%\newtheorem{theorem}{Theorem}[section]
+
+%\newtheorem{conjecture}[theorem]{Conjecture}
+%\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{fact}[theorem]{Fact}
+%\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{assumption}[theorem]{Assumption}
+%\newtheorem{proposition}[theorem]{Proposition}
+{
+\theoremstyle{definition}
+%\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{goal}[theorem]{Goal}
+}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{construction}[theorem]{Construction}
+
+\newenvironment{proofof}[1]{\noindent \emph{Proof of }#1.}{\hfill \qed}
+
+\newcommand{\es}{EbN\xspace}
+
+\newcommand{\Pow}{\mathsf{Pow}}
+
+
+
+\newcounter{cnt:challenge}
+
+%\urlstyle{sf}
+
+\newcommand{\elainetodo}[1]{%
+    \colorbox{red!20}{%
+\parbox{\textwidth}{
+elaine: \\
+ #1
+    }
+}
+}
+
+\newcommand{\rb}[1]{\colorbox{blue!20}{#1}}
+\newcommand{\wt}[1]{{#1}}
+
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
+\renewcommand{\deg}{{\ensuremath{\mathsf{deg}}}\xspace}
+
+
+\newcommand{\renyi}{R\'{e}nyi\xspace}
+\newcommand{\D}{\mathsf{D}}
+\newcommand{\Dz}{\mathsf{D^z}}
+\newcommand{\RDP}{\ensuremath{\mathsf{RDP}}}
+\newcommand{\zCDP}{\ensuremath{\mathsf{zCDP}}}
+\newcommand{\E}{\mathbf{E}}
+
+\newcommand{\supp}{\ensuremath{\mathsf{supp}}}
+\newcommand{\W}{\ensuremath{\mathsf{W}}}
+
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\gaussian}[2]{\mathcal{N}(#1, #2)}
+
+\newcommand{\ts}{\textstyle}
+
+
+\newcommand{\f}{\mathfrak{f}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%% disjoint union
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+\newcommand{\charfusion}[3][\mathord]{
+    #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}
+      }
+    \ifx#1\mathop\expandafter\displaylimits\fi}
+\makeatother
+
+\newcommand{\cupdot}{\charfusion[\mathbin]{\cup}{\cdot}}
+%\newcommand{\bigcupdot}{\charfusion[\mathop]{\bigcup}{\cdot}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+
+
