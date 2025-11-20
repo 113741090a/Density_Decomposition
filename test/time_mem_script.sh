@@ -18,9 +18,9 @@ chmod +x run_memory.sh
 ./run_memory.sh
 
 cd data_normal_mem/
-$PYTHON_CMD plot.py
+$PYTHON_CMD plot_single.py
 mkdir -p ../../../images/time_mem/mem_normal
-mv figures/* ../../../../images/time_mem/mem_normal
+mv figures/* ../../../images/time_mem/mem_normal
 
 
 

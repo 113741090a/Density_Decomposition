@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import FuncFormatter
 from matplotlib.ticker import FuncFormatter, FixedLocator
-#algo_list = [ "FISTA", "FW_Elist", "PR", "PR_lin", "Greedypp", "Elistpp","PR_exp_pro"]
-algo_names =  ["PR_exp1", "PR_exp2", "PR_exp3", "PR_exp4", "PR_exp5", "PR_exp6", "PR_exp10"]
+#algo_list = [ "FISTA", "FW_Elist", "PR", "PR_lin", "Greedypp", "Elistpp","PR_exp_pro"] , "PR_exp10"
+algo_names =  ["PR_exp1", "PR_exp2", "PR_exp3", "PR_exp4", "PR_exp5", "PR_exp6"] 
 
 # 自定义y轴刻度的函数
 def custom_scale(y, pos):
@@ -28,8 +28,24 @@ def scientific_notation(num):
 
     return (num, exponent)
 
+def calculate_l2_norm(file_path):
+    res = 0.0
+    coordinates = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            numbers = line.strip().split()
+            if len(numbers) >= 2:
+                res = res + float(numbers[1])*float(numbers[1])
+    res = res**(1/2)
+
+    return res
 
 real_obj = 5809.723928923836
+
+file_path = 'Exact_normal.txt'  # 替换为你的文件路径
+
+real_obj = calculate_l2_norm(file_path)
+
 res = scientific_notation(real_obj)
 num = res[0]
 exponent = res[1]
@@ -182,7 +198,7 @@ file_colors = {
 
 # 定义绘图任务
 folder_name = "data_normal/"
-algo_list = ["PR_exp1", "PR_exp2", "PR_exp3", "PR_exp4", "PR_exp5", "PR_exp6", "PR_exp10"]
+algo_list = ["PR_exp1", "PR_exp2", "PR_exp3", "PR_exp4", "PR_exp5", "PR_exp6"] #, "PR_exp10"
 #algo_list = ["FISTA", "Greedy++", "Elist++", "PR", "PR_lin", "PR_exp"]
 #algo_list = [ "FISTA", "FW_Elist", "PR", "PR_lin", "Greedypp", "Elistpp","PR_exp_pro"] "FISTA*",
 #"FW_syn","FW_WF","PR_exp",
