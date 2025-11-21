@@ -3,7 +3,7 @@
 
 ./download_process.sh
 
-./run_interative.sh
+./run_iterative.sh
 
 ./parameters.sh
 
