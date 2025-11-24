@@ -5,31 +5,31 @@ PYTHON_CMD="python3"
 # Define arrays
 #https://snap.stanford.edu/data/facebook_combined.txt.gz
 DATASET_URLS=(
-    "https://snap.stanford.edu/data/facebook_combined.txt.gz"
+    "https://snap.stanford.edu/data/bigdata/communities/com-amazon.ungraph.txt.gz"
     # You can add more datasets here. 
 )
 
 # The original data downloaded from the internet may contain unnecessary lines. 
 # Here each number corresponds to a dataset, meaning the number of unnecessary lines that need to be deleted. 
 PYTHON_PARAMS=(
-    "0"
+    "4"
 )
 
 
 # Folder name where the data for each dataset is stored. 
 OUTPUT_PATHS=(
-    "facebook"
+    "amazon"
     # You can add more output paths
 )
 
 
 BIPARTITE_NAMES=(
-    "facebook.txt"
+    "amazon.txt"
 )
 
 
 HYPER_NAMES=(
-    "facebook.txt"
+    "amazon.txt"
 )
 
 # Check if array lengths are consistent

@@ -2,7 +2,7 @@
 
 # 定义要传递的参数列表
 #params=("amazon.txt" "dblp.txt" "roadnet-PA.txt" "roadnet-CA.txt" "web-google.txt" "patent.txt" "top-cats.txt" "orkut.txt") #("amazon.txt" "patent.txt" "top-cats.txt")
-params=("facebook.txt") #"amazon.txt" "web-google.txt"
+params=("amazon.txt") #"amazon.txt" "web-google.txt"
 
 algos=("FISTA*" "PR_exp" "Elist++" "PR" "PR_lin" "Greedy++")
 #params=("bipartite_mark2.txt" "bipartite_mark3.txt" "bipartite_mark4.txt" "bipartite_mark5.txt")
