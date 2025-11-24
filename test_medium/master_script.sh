@@ -1,11 +1,10 @@
 
-#./install.sh 
+./install.sh 
 
-#./download_process.sh
+./download_process.sh
 
 ./run_iterative.sh
 
-exit 0
 
 ./parameters.sh
 
