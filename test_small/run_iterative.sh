@@ -1,5 +1,5 @@
 # Configuration variables
-BOOST_PATH="../../../Boost/boost_1_86_0"
+BOOST_PATH="../Boost/boost_1_86_0"
 
 PYTHON_CMD="python3"
 
