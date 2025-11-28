@@ -118,6 +118,13 @@ optim* readedgelist(char* edgelist){
   opt->m=0; //number of hyperedges
 	opt->e=0;
 	file=fopen(edgelist,"r");
+	//check if the file opened successfully
+    if (file == NULL) {
+        printf("Cannot open file: %s\n", edgelist);
+        free(opt);
+        exit(-1);
+        //return NULL;
+    }
 	opt->edges=(link0*)malloc(e1*sizeof(link0) );
   unsigned s_tmp = 0;
   unsigned t_tmp = 0;

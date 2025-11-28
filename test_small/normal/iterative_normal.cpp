@@ -102,7 +102,8 @@ optim* readedgelist(char* edgelist){
     if (file == NULL) {
         printf("Cannot open file: %s\n", edgelist);
         free(opt);
-        return NULL;
+        exit(-1);
+        //return NULL;
     }
 	opt->edges=(link0*)malloc(e1*sizeof(link0) );
   unsigned s_tmp = 0;
