@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 GPP_CMD="g++"
 PYTHON_CMD="python3"
 
