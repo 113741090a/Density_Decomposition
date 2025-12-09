@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 ./install.sh 
 
 ./download_process.sh
