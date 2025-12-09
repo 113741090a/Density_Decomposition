@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Configuration variables
 BOOST_PATH="../Boost/boost_1_86_0"
 
