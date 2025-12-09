@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #python command name
 PYTHON_CMD="python3"
 
