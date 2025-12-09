@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd parameters/normal/amazon
 
 BOOST_PATH="../../Boost/boost_1_86_0"
